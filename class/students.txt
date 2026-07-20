@@ -7,6 +7,7 @@ dong_truong_long
 duong_minh_khang
 duy
 gia_bao_doan
+hoang_long
 hoang_ngoc_gia_bao
 hong_tu
 khanh_trinh
@@ -20,3 +21,16 @@ nguyen_xuan_vinh
 pham_dong_tra
 pham_duc_huong
 pham_tr_dung
+phi_long
+quis
+thai_khac_hung
+thien_an
+tran_dinh_y
+tran_ho_khanh_tan
+tran_quoc_si
+tran_triet
+truong_huy
+tu_la
+tuan_minh
+viet_hoang
+vinh_nguyen_thanh
