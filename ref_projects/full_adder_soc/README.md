@@ -34,7 +34,9 @@
 
      rsi (Reset Sink) - Tương tự, chỉ cần đặt reset hoặc reset_n.
 
-     coe (Conduit Export) - Dùng cho các tín hiệu ngoại vi nối ra ngoài.```
+     coe (Conduit Export) - Dùng cho các tín hiệu ngoại vi nối ra ngoài.
+```
+
 - Trong thiết kế của LAB này, sử dụng cầu h2f heavy weight giao diện axi (h2f_axi_master), cây cầu này có độ rộng được lựa chọn là 64 bit. Như hình dưới.
 
 <img width="1452" height="730" alt="image" src="https://github.com/user-attachments/assets/0d6419a8-4e9c-40f6-b6f9-a473443a14e2" />
