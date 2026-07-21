@@ -263,6 +263,7 @@ int main(int argc, char **argv) {
 }
 ```
 **Code phần mềm hệ thống, không sử dụng header hps_0.h, viết bằng C** 
+```
 #include <error.h>
 #include <fcntl.h>
 #include <inttypes.h>
