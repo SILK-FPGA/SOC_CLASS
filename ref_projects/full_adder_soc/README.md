@@ -57,6 +57,10 @@
 <img width="1448" height="311" alt="image" src="https://github.com/user-attachments/assets/b915ed91-4822-460b-aaa9-3a2507e825db" />
 
 - Tiếp đên ta cần một file header *'hps_0.h'* để dịch các địa chỉ gốc (base address) thành các macro trong ngôn ngữ C để ta lập trình cho CPU. Trong thư mục chứa file .qpf, sau khi generate xong phần cứng SoC, file *'soc_system.sopcinfo'* sẽ được tạo ra, đây là nguyên liệu để xào nấu ra file *'hps_0.h'.
+  
+  <img width="1109" height="628" alt="image" src="https://github.com/user-attachments/assets/77070940-2c0f-40fe-820f-9514c1124857" />
+
+
 - Để chạy được các bước tạo file header dưới đây, trước tiên cần tải SoC EDS Standard 20.1 (linux) và WSL :
   ``` ~/intelFPGA_lite/20.1/embedded/embedded_command_shell.sh
        cd full_adder_soc/
