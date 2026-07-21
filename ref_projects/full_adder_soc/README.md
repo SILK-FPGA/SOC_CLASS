@@ -9,7 +9,9 @@
 4) Ánh xạ các slave thành các địa chỉ riêng biệt, không đè lên nhau, và có độ rộng hợp lệ.
 5) Kiểm tra trạng thái của linux kernel, kiểm tra device tree, kiểm tra các cây cầu đã enable chưa.
 6) Biên dịch hệ thống thành file .rbf, viết code C và kiểm tra hệ thống.
+   
 **Cụ thể bài toán**
+*Thiết kế phần cứng*
 - Nhìn về phía CPU, dữ liệu ghi vào a và b, dữ liệu đọc từ sum. Do đó đối với CPU, a và b là output, sum là input.
 - Khi thiết kế khối pio_in và pio_out, cần lưu ý độ rộng phải hợp lệ (1, 8, 16, 32, 64, 128), nếu độ rộng khác khoảng này cần đệm cho đủ số bit ở vùng không sử dụng.
 - PIO64_IN là khối giao diện giúp cho CPU đọc dữ liệu trả về từ sum, nên ta cần 2 chân tín hiệu là readdata, read, dĩ nhiên phải có clk và reset.
@@ -47,4 +49,20 @@
 <img width="1853" height="989" alt="image" src="https://github.com/user-attachments/assets/44da9bfe-53b3-4a5f-b7e4-887a899fede9" />
 
 - Lưu lại với ctrl+S, generate HDL code là xong.
+
+*Thiết kế phần mềm*
+
+- Toàn bộ tài liệu tham khảo anh để trong notebooklm, các bạn có thể lên lên đó hỏi cho tiện, hoặc bấm vào link này để tra cứu [CYCLONE V HPS] (https://docs.altera.com/r/docs/683126/21.2/cyclone-v-hard-processor-system-technical-reference-manual/cyclone-v-hard-processor-system-technical-reference-manual-revision-history).
+- Việc thiết kế phần mềm, ta cần biết địa chỉ của các cây cầu. Ở đây ta cần xác định địa chỉ của cầu h2f_heavyweight_axi_master. Như hình dưới đây, cây cầu này có địa chỉ gốc là 0xC000000:
+  
+<img width="1448" height="311" alt="image" src="https://github.com/user-attachments/assets/b915ed91-4822-460b-aaa9-3a2507e825db" />
+
+- Tiếp đên ta cần một file header *'hps_0.h'* để dịch các địa chỉ gốc (base address) thành các macro trong ngôn ngữ C để ta lập trình cho CPU. Trong thư mục chứa file .qpf, sau khi generate xong phần cứng SoC, file *'soc_system.sopcinfo'* sẽ được tạo ra, đây là nguyên liệu để xào nấu ra file *'hps_0.h'
+- Để chạy được các bước tạo file header dưới đây, trước tiên cần tải SoC EDS Standard 20.1 (linux) và WSL :
+  ``` ~/intelFPGA_lite/20.1/embedded/embedded_command_shell.sh
+       cd full_adder_soc/
+       sopc-create-header-files "soc_system.sopcinfo" --single hps_0.h --module hps_0
+  ```
+- Hoặc ta có thể tự thêm thủ công:
+  
 
