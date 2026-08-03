@@ -59,7 +59,8 @@ Toàn bộ các bước trên minh họa như hình dưới:
 - Avalon là một kiến ​​trúc bus khá toàn diện, hỗ trợ nhiều loại giao dịch đa dạng. Khi muốn tối ưu hóa hiệu quả giao dịch (ví dụ: tăng lưu lượng dữ liệu), độ phức tạp của giao dịch cũng sẽ tăng lên. Độ phức tạp này còn phụ thuộc vào việc ta đang thiết kế thành phần Host (Master) hay Agent (Slave). Trong khi thành phần Agent chỉ cần phản hồi lại các tín hiệu từ Host, thì Host lại phải đảm nhận nhiều nhiệm vụ hơn: vừa phản hồi lại Agent, vừa quản lý bus để đảm bảo Agent nhận được các lệnh một cách chính xác.
 - HPS SDRAM Controller (bộ điều khiển RAM DDR3 do HPS hay CPU quản lý) sử dụng giao diện Avalon MM Burst để thực hiện các giao dịch, do đó ở phần này ta sẽ tìm hiểu kĩ hơn về nó.
 
-### Avalon MM read/write cơ bản
+### Avalon MM Basic Read/Write
+
 - Đối với một thành phần cần thực hiện thao tác đọc, tín hiệu tối thiểu bắt buộc phải có để tuân thủ các thông số kỹ thuật của bus Avalon là `readdata`.
 
 - Đối với một thành phần cần thực hiện thao tác ghi, các tín hiệu tối thiểu bắt buộc là `write` và `writedata`.
@@ -80,4 +81,64 @@ Trong trường hợp này, agent luôn trả về một giá trị tại cổng
 
   <img width="891" height="638" alt="image" src="https://github.com/user-attachments/assets/a9c80e8c-2361-4843-9194-9aefaf54a6fc" />
 
+Phần này anh đã nói trong buổi học, nên mô tả trong này sẽ khá dài, các bạn chịu khó xem lại video bài giảng để nắm kĩ hơn nhé.
+
+### Avalon MM Pipelined Read/Write
+Xét về mặt hình thức, sự khác biệt duy nhất giữa giao dịch dạng đường ống (pipelined) và giao dịch cơ bản (basic) chỉ nằm ở tín hiệu `readdatavalid`. Tuy nhiên, sự hiện diện của tín hiệu này lại tạo ra sự thay đổi mang tính quyết định.
+
+<img width="1315" height="345" alt="image" src="https://github.com/user-attachments/assets/8faecbe4-dbfc-41d3-9fb7-72401310704b" />
+
+- Khi agent kích hoạt tín hiệu `waitrequest`, host cần giữ nguyên trạng thái của các tín hiệu địa chỉ và tín hiệu đọc.
+- Khi agent hủy kích hoạt tín hiệu `waitrequest`, host có thể tiếp tục duy trì tín hiệu đọc ở mức c
+- ao và cung cấp thêm các địa chỉ để agent phản hồi dữ liệu.
+- Host không bắt buộc phải chờ agent phản hồi dữ liệu cho một địa chỉ cụ thể nào đó trước khi yêu cầu thêm dữ liệu; host có thể thực hiện các yêu cầu và nhận phản hồi một cách song song.
+- Bất cứ khi nào có dữ liệu để phản hồi, agent sẽ kích hoạt tín hiệu `readdatavalid` và đưa dữ liệu vào tín hiệu `readdata` cho đến sườn dương tiếp theo của xung nhịp (`clk`) – thời điểm mà host sẽ lấy mẫu dữ liệu từ `readdata`.
+- Các phản hồi tiếp theo từ agent cũng được host thu nhận theo cách tương tự, tức là khi tín hiệu `readdatavalid` chuyển sang mức cao. Dữ liệu được trả về theo đúng thứ tự tương ứng với các địa chỉ đã được gửi đi.
+
+Phần này anh đã nói trong buổi học, nên mô tả trong này sẽ khá dài, các bạn chịu khó xem lại video bài giảng để nắm kĩ hơn nhé.
+
+### Avalon MM Burst Read/Write
+
+- Giao dịch dạng Burst (truyền dữ liệu theo khối) được phát triển dựa trên giao dịch dạng Pipelined (đường ống) với việc bổ sung thêm tín hiệu `burstcount`. Host sử dụng tín hiệu này để yêu cầu Agent trả về một số lượng đơn vị dữ liệu hoặc từ (word) nhất định. Kích thước của mỗi từ tương ứng với kích thước của tín hiệu `readdata`. Do đó, cơ chế này đặc biệt hữu ích cho các yêu cầu truy cập bộ nhớ (chẳng hạn như SDRAM), nơi cần lấy dữ liệu từ các ô nhớ liên tiếp bắt đầu từ một địa chỉ cụ thể.
+
+- Vì giao diện Burst cũng là một dạng giao diện Pipelined, nên các đặc tính hoạt động còn lại hoàn toàn giống với giao diện Pipelined. Điểm khác biệt duy nhất là ta chỉ cần cung cấp một giá trị địa chỉ duy nhất.
+
+  <img width="1295" height="415" alt="image" src="https://github.com/user-attachments/assets/7f77e98d-c1ed-40aa-b00c-5e474353b72c" />
+
+### Avalon MM Bidirectional Port Signals for SDRAM Controller
+
+Dưới đây là các chân tín hiệu 2 chiều mà thành phần Host (Master) cần có để giao tiếp với SDRAM, nằm trong tài liệu Cyclone V Hard Processor System Technical Reference Manual, chương FPGA-to-SDRAM Protocol Details:
+
+<img width="1021" height="791" alt="image" src="https://github.com/user-attachments/assets/64717c1d-c385-4fc0-8fd3-2674e3fcfc63" />
+
+## Custom DMA IP
+
+Ta sẽ xem flow của hệ thống như sơ đồ bên dưới với trình tự thực hiện từ 0 tới 5
+
+<img width="1597" height="672" alt="image" src="https://github.com/user-attachments/assets/83b6b91e-f2f3-4255-9c98-f6225a4f0b84" />
+
+- O. Đầu tiên CPU dùng file /dev/mem để mở vùng RAM vật lý, ghi 2 giá trị a và b vào 2 địa chỉ vật lý liền kề nhau trong RAM.
+- 1. CPU báo cờ do read lên 1 và gửi mô tả thông qua thanh ghi ctrl reg cho DMA (avalon_control + avalon_sdr) bắt đầu việc đọc ra từ RAM. Lúc này CPU đóng vai trò là Host, thông qua interface avalon memory-mapped để gửi cho agent avalon_control. Vai trò của agent này là đứng ngay biên giới giữa HPS và FPGA, thiết lập các interface của avalon mm slave để nhận đúng dữ liệu từ CPU.
+- 2. avalon_control dùng gửi lại các mô tả từ CPU mà nó nhận được cho avalon_sdr, avalon sdr sau khi nhận được cờ sẽ bắt đầu vào trạng thái đọc từ RAM như một avalon mm master.
+- 3. avalon_sdr nhận dữ liệu từ RAM qua chân sdram data thông qua interface avalon mm master.
+- 4. avalon_sdr gửi `adder_a` và `adder b` qua cho khối adder nhận và xử lí.
+- 5. adder sau khi xử lí xong liền gửi kết quả cho pio32_in, pio32_in là agent đóng vai trò gửi dữ liệu khi cầu avalon_mm_pipeline_bridge yêu cầu đọc. Giá trị `adder_sum` sẽ được ghi vào địa chỉ vật lý trong RAM và sau đó CPU sẽ check sau 1 khoảng thời gian.
+
+Bên trong avalon_sdr, một máy trạng thái được thiết kế để liên tục đọc dữ liệu ngay khi có cờ `do_read` = 1, `wait_request` là tín hiệu từ RAM yêu cầu Host phải chờ khi nó chưa sẵn sàng gửi, `readdatavalid` là cờ báo dữ liệu `readdata` trả về từ Agent RAM là hợp lệ. Hình minh họa về máy trạng thái như bên dưới.
+
+<img width="960" height="720" alt="image" src="https://github.com/user-attachments/assets/9a4f18ab-fec5-48b3-bb44-12ee9ecbdf1d" />
+
+Các chân tín hiệu trong code verilog nằm trong thư mục ip/ddr3/avalon_sdr.sv 
+- Từ Agent --> Host:
+  - `avm_m0_waitrequest`: cờ báo Agent chưa sẵn sàng để nhận địa chỉ `avm_m0_address` từ Host gửi tới.
+  - `avm_m0_readdata`: dữ liệu đọc ra từ RAM sẽ nằm trên bus dữ liệu này.
+  - `avm_m0_readdatavalid`: cờ báo dữ liệu đọc ra từ RAM là hợp lệ, gửi cùng chu kì có `avm_m0_readdata`.
+- Từ Host --> Agent:
+  - `avm_m0_address`: Địa chỉ đọc dữ liệu từ Agent.
+  - `avm_m0_read`: Yêu cầu đọc dữ liệu từ Agent.
+  - `avm_m0_byteenable`: Mặt nạ dùng cho việc ghi dữ liệu vào Agent
+  - `avm_m0_burstcount`: Số lượng các ô địa chỉ liền kề cần đọc ra từ Agent. vd: burstcount: 4, địa chỉ bắt đầu là 0x20000000, thì nó đọc tới 0x20000003 thì dừng.
+  - `avm_m0_address`: Địa chỉ bắt đầu đọc.
+
+  Chi tiết hơn về 2 đoạn code của avalon_control và avalon_sdr các bạn xem lại video bài giảng, code verilog anh để trong thư mục /ip/ddr3/ ngay tại thư mục này.
 
