@@ -113,16 +113,19 @@ Dưới đây là các chân tín hiệu 2 chiều mà thành phần Host (Maste
 
 ## Custom DMA IP
 
+### Harware Design
 Ta sẽ xem flow của hệ thống như sơ đồ bên dưới với trình tự thực hiện từ 0 tới 5
 
-<img width="1597" height="672" alt="image" src="https://github.com/user-attachments/assets/83b6b91e-f2f3-4255-9c98-f6225a4f0b84" />
+<img width="1300" height="666" alt="image" src="https://github.com/user-attachments/assets/387648f2-c4e9-44f3-84fd-4f725bbba533" />
+
+
 
 - O. Đầu tiên CPU dùng file /dev/mem để mở vùng RAM vật lý, ghi 2 giá trị a và b vào 2 địa chỉ vật lý liền kề nhau trong RAM.
 - 1. CPU báo cờ do read lên 1 và gửi mô tả thông qua thanh ghi ctrl reg cho DMA (avalon_control + avalon_sdr) bắt đầu việc đọc ra từ RAM. Lúc này CPU đóng vai trò là Host, thông qua interface avalon memory-mapped để gửi cho agent avalon_control. Vai trò của agent này là đứng ngay biên giới giữa HPS và FPGA, thiết lập các interface của avalon mm slave để nhận đúng dữ liệu từ CPU.
 - 2. avalon_control dùng gửi lại các mô tả từ CPU mà nó nhận được cho avalon_sdr, avalon sdr sau khi nhận được cờ sẽ bắt đầu vào trạng thái đọc từ RAM như một avalon mm master.
 - 3. avalon_sdr nhận dữ liệu từ RAM qua chân sdram data thông qua interface avalon mm master.
 - 4. avalon_sdr gửi `adder_a` và `adder b` qua cho khối adder nhận và xử lí.
-- 5. adder sau khi xử lí xong liền gửi kết quả cho pio32_in, pio32_in là agent đóng vai trò gửi dữ liệu khi cầu avalon_mm_pipeline_bridge yêu cầu đọc. Giá trị `adder_sum` sẽ được ghi vào địa chỉ vật lý trong RAM và sau đó CPU sẽ check sau 1 khoảng thời gian.
+- 5. adder sau khi xử lí xong liền gửi kết quả cho pio32 lưu kết quả, sau 1 khoảng thời gian, CPU phát 1 lệnh đọc xuống cầu h2f_axi_master, vào vùng của FPGA, đi qua cầu mm_bridge_0 (đang nối thẳng vào pio32_0) để lôi dữ liệu ra.
 
 Bên trong avalon_sdr, một máy trạng thái được thiết kế để liên tục đọc dữ liệu ngay khi có cờ `do_read` = 1, `wait_request` là tín hiệu từ RAM yêu cầu Host phải chờ khi nó chưa sẵn sàng gửi, `readdatavalid` là cờ báo dữ liệu `readdata` trả về từ Agent RAM là hợp lệ. Hình minh họa về máy trạng thái như bên dưới.
 
@@ -142,3 +145,192 @@ Các chân tín hiệu trong code verilog nằm trong thư mục ip/ddr3/avalon_
 
   Chi tiết hơn về 2 đoạn code của avalon_control và avalon_sdr các bạn xem lại video bài giảng, code verilog anh để trong thư mục /ip/ddr3/ ngay tại thư mục này.
 
+  **Tiếp theo là phần nối dây bên trong platform designer**:
+  
+  <img width="1414" height="776" alt="image" src="https://github.com/user-attachments/assets/e263ba91-cd6d-4fb3-9455-ae3809f86e43" />
+
+Trong hình trên ta có các khối như sau:
+- **hps_0** là AXI Master, tương tác với slave **avalon_control_0**, **mm_bridge_0**
+- **avalon_sdr_0** là Avalon MM Master nối vào SDRAM DDR3 đang là Avalon MM Slave thông qua `f2h_sdram0_data` bên trong hps_0.
+- **mm_bridge_0** vừa là Avalon MM Master (đối với **pio32_0**) vừa là Avalon MM Slave (đối với **hps_0**), địa chỉ offset bắt đầu từ 0x1000 đến 0x13FF (so với cây cầu h2f_axi_master [0xC0000000]).
+- **avalon_control_0** là Avalon MM Slave, địa chỉ offset bắt đầu từ 0x0000 đến 0x0003 (so với cây cầu h2f_axi_master [0xC0000000]).
+- **pio32_0** là Avalon MM Slave, địa chỉ offset bát đầu từ 0x0000 đến 0x0003 (so với cây cầu **mm_bridge_0**).
+
+Khi đó ta có bảng địa chỉ như sau:
+
+
+#### **1. Bảng phân cấp địa chỉ chi tiết**
+
+| Tên IP Slave | Giao tiếp Slave | Trực thuộc Master | Địa chỉ Offset (so với Master) | Địa chỉ vật lý tuyệt đối (Code C) | Dải địa chỉ vật lý chiếm dụng |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **`avalon_control_0`** | Avalon MM Slave (`s0`) | `hps_0.h2f_axi_master` | `0x0000_0000` | **`0xC0000000`** | `0xC0000000` – `0xC0000003` |
+| **`mm_bridge_0`** | Avalon MM Slave (`s0`) | `hps_0.h2f_axi_master` | `0x0000_1000` | **`0xC0001000`** | `0xC0001000` – `0xC00013FF` |
+| **`pio32_0`** | Avalon MM Slave (`s0`) | `mm_bridge_0.m0` | `0x0000_0000` | **`0xC0001000`** | `0xC0001000` – `0xC0001003` |
+| **DDR3 SDRAM** | Avalon MM Slave | `avalon_sdr_0.m0` | `0x0000_0000` | **`0x20000000`** *(Vùng Data Test)* | `0x00000000` – `0xFFFFFFFF` |
+
+---
+
+#### **2. Công thức tính toán địa chỉ phân cấp**
+
+* **Đối với `avalon_control_0`:**
+  $$\text{Physical Address} = \text{Base}_{H2F} + \text{Offset}_{\text{avalon\_control}}$$
+  $$\text{Physical Address} = \mathtt{0xC0000000} + \mathtt{0x00000000} = \mathbf{\mathtt{0xC0000000}}$$
+
+* **Đối với `mm_bridge_0` (Pipeline Bridge):**
+  $$\text{Physical Address} = \text{Base}_{H2F} + \text{Offset}_{\text{mm\_bridge}}$$
+  $$\text{Physical Address} = \mathtt{0xC0000000} + \mathtt{0x00001000} = \mathbf{\mathtt{0xC0001000}}$$
+
+* **Đối với `pio32_0` (Đi qua Bridge):**
+  $$\text{Physical Address} = \text{Base}_{H2F} + \text{Offset}_{\text{mm\_bridge}} + \text{Offset}_{\text{pio32}}$$
+  $$\text{Physical Address} = \mathtt{0xC0000000} + \mathtt{0x00001000} + \mathtt{0x00000000} = \mathbf{\mathtt{0xC0001000}}$$
+
+* **Đối với `DDR3 SDRAM` (Truy cập qua F2S Bridge):**
+  Khối Custom DMA (`avalon_sdr_0`) làm Master cắm trực tiếp vào cầu `f2h_sdram0_data`, không đi qua cầu H2F. Khi code C nạp tham số địa chỉ `0x20000000`, DMA sẽ truy cập thẳng tới offset **512MB** trên thanh RAM vật lý.
+
+# Software Design
+```
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/mman.h>
+#include <stdint.h>
+#include <time.h>
+
+// ĐỊA CHỈ VẬT LÝ (PHYSICAL ADDRESS) 
+//  H2F Bridge
+#define HW_REGS_BASE        0xC0000000
+#define HW_REGS_SPAN        0x2000      // Map 8KB 
+#define HW_REGS_MASK        (HW_REGS_SPAN - 1)
+
+// Offset của các IP so với HW_REGS_BASE
+#define AVALON_CONTROL_OFFSET  0x0000
+#define PIO_RESULT_OFFSET      0x1000   
+
+// Vùng dữ liệu SDRAM (Nơi chứa số hạng A, B)
+#define SDRAM_TARGET_ADDR   0x20000000
+#define SDRAM_SPAN          0x1000      // Map 4KB 
+#define SDRAM_MASK          (SDRAM_SPAN - 1)
+
+int main() {
+    int fd;
+    void *virtual_base_regs;
+    void *virtual_base_sdram;
+    
+    volatile uint32_t *ctrl_ptr;
+    volatile uint32_t *pio_ptr;
+    volatile uint32_t *ram_ptr;
+
+    uint32_t val_A, val_B, expected_sum, actual_sum;
+
+    // Mở file /dev/mem để truy cập bộ nhớ vật lý
+    if ((fd = open("/dev/mem", O_RDWR | O_SYNC)) == -1) {
+        perror("FATAL: Couldn't open /dev/mem");
+        return 1;
+    }
+
+    // =============================================================
+    // MAP ĐỊA CHỈ VÙNG ĐIỀU KHIỂN (FPGA PERIPHERALS)
+    // =============================================================
+    virtual_base_regs = mmap(NULL, HW_REGS_SPAN, (PROT_READ | PROT_WRITE), MAP_SHARED, fd, HW_REGS_BASE);
+    if (virtual_base_regs == MAP_FAILED) {
+        perror("FATAL: mmap regs failed");
+        close(fd);
+        return 1;
+    }
+
+    // Ánh xạ con trỏ 
+    ctrl_ptr = (uint32_t *)(virtual_base_regs + AVALON_CONTROL_OFFSET);
+    pio_ptr  = (uint32_t *)(virtual_base_regs + PIO_RESULT_OFFSET);
+
+    // =============================================================
+    // MAP ĐỊA CHỈ VÙNG SDRAM (DATA)
+    // =============================================================
+    
+    virtual_base_sdram = mmap(NULL, SDRAM_SPAN, (PROT_READ | PROT_WRITE), MAP_SHARED, fd, SDRAM_TARGET_ADDR);
+    if (virtual_base_sdram == MAP_FAILED) {
+        perror("FATAL: mmap sdram failed");
+        close(fd);
+        return 1;
+    }
+    
+    ram_ptr = (uint32_t *)virtual_base_sdram;
+
+    // =============================================================
+    // CHUẨN BỊ DỮ LIỆU TEST
+    // =============================================================
+    srand(time(NULL));
+    val_A = rand() % 100; // Số ngẫu nhiên 0-99
+    val_B = rand() % 100;
+    expected_sum = val_A + val_B;
+
+    printf("----------------------------------------\n");
+    printf("[SW] Writing to SDRAM @ 0x%08X\n", SDRAM_TARGET_ADDR);
+    
+    // Ghi vào 2 ô nhớ liên tiếp (32-bit mỗi ô)
+    // ram_ptr[0] tương ứng 0x20000000
+    // ram_ptr[1] tương ứng 0x20000004
+    *(ram_ptr + 0) = val_A;
+    *(ram_ptr + 1) = val_B;
+
+    printf("     Addr 0x%08X = %d\n", SDRAM_TARGET_ADDR, val_A);
+    printf("     Addr 0x%08X = %d\n", SDRAM_TARGET_ADDR + 4, val_B);
+    printf("     Expected Sum   = %d\n", expected_sum);
+
+    // =============================================================
+    // CẤU HÌNH AVALON CONTROL & TRIGGER
+    // =============================================================
+    // Cấu trúc Register:
+    // [31:12] Init Addr (20 bit)
+    // [11:1]  Burst Length (11 bit)
+    // [0]     Do Read (1 bit)
+    
+    uint32_t init_addr_val = (SDRAM_TARGET_ADDR >> 12); // Lấy 20 bit cao (bỏ 12 bit thấp)
+    uint32_t burst_len_val = 2;                         // Đọc 2 số
+    
+    // Tạo giá trị điều khiển
+    uint32_t control_word = (init_addr_val << 12) | (burst_len_val << 1);
+    
+    // Reset control (do_read = 0)
+    *ctrl_ptr = control_word | 0;
+    
+    printf("[SW] Triggering FPGA Hardware Accelerator...\n");
+    // Trigger (do_read = 1)
+    *ctrl_ptr = control_word | 1;
+
+    
+    usleep(100); 
+
+    // Tắt bit do_read 
+    *ctrl_ptr = control_word | 0;
+
+    // =============================================================
+    // ĐỌC KẾT QUẢ TỪ PIO
+    // =============================================================
+    actual_sum = *pio_ptr;
+
+    printf("[HW] Result read from PIO (0xC0001000): %d\n", actual_sum);
+
+    if (actual_sum == expected_sum) {
+        printf("\n✅ SUCCESS: Hardware result matches Software calculation!\n");
+    } else {
+        printf("\n❌ FAILURE: Mismatch! Expected %d, got %d\n", expected_sum, actual_sum);
+    }
+    printf("----------------------------------------\n");
+
+    // Dọn dẹp
+    if (munmap(virtual_base_regs, HW_REGS_SPAN) != 0) perror("munmap regs failed");
+    if (munmap(virtual_base_sdram, SDRAM_SPAN) != 0) perror("munmap sdram failed");
+    close(fd);
+
+    return 0;
+}
+
+```
+## OUTPUT ON FPGA
+
+Kết quả sau khi nạp device tree overlay như hình dưới, cách nạp động qua device tree overlay các bạn xem trong thư mục /docs, file dynamic_device_tree_overlay.md nha:
+
+<img width="1414" height="809" alt="image" src="https://github.com/user-attachments/assets/cfa30094-c1cc-4b7e-b0c0-a956bf4bdfeb" />
+
+Thử ghi vào 2 số ngẫu nhiên, rồi đọc ra từ địa chỉ cầu H2F 0xC0000000, ta được kết quả tính toán từ phần cứng adder (custom IP) y hệt như kết quả trên phần mềm.
