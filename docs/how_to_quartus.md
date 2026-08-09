@@ -97,15 +97,15 @@ Constraint (.sdc):
 
 ## CÁC BƯỚC CHẠY DỰ ÁN
 
-*BƯỚC 1* Chạy biên dịch toàn bộ dự án với nút thực thi (đã đề cập ở 7.) hình tam giác màu xanh (Start Compilation) hoặc Ctrl + L
+**BƯỚC 1** Chạy biên dịch toàn bộ dự án với nút thực thi (đã đề cập ở 7.) hình tam giác màu xanh (Start Compilation) hoặc Ctrl + L
 
 <img width="1855" height="963" alt="image" src="https://github.com/user-attachments/assets/8be309dc-d800-44c3-9938-f573a747ea8d" />
 
-*BƯỚC 2* Mỗi khi thực hiện chỉnh sửa và lưu file, thanh trạng thái (đã đề cập ở 5.) sẽ hiện dấu ?, ta cần phải chạy lại tới khi hiện thành công (dấu tick màu xanh)
+**BƯỚC 2** Mỗi khi thực hiện chỉnh sửa và lưu file, thanh trạng thái (đã đề cập ở 5.) sẽ hiện dấu ?, ta cần phải chạy lại tới khi hiện thành công (dấu tick màu xanh)
 
 <img width="692" height="865" alt="image" src="https://github.com/user-attachments/assets/b563ddfb-7b74-4b35-aff2-ed0e7c9686fa" />
 
-*BƯỚC 3* Để thêm hoặc xóa các file RTL .sv .v phục vụ cho biên dịch, ta làm các bước như sau:
+**BƯỚC 3** Để thêm hoặc xóa các file RTL .sv .v phục vụ cho biên dịch, ta làm các bước như sau:
 
 Trên thanh tác vụ chọn: **Project --> Add/Remove Files in Project...**
 
@@ -119,7 +119,7 @@ Sau khi mở xong, file sẽ hiện ra ngay cửa sổ phía dưới, ta có th�
 
 <img width="1198" height="868" alt="image" src="https://github.com/user-attachments/assets/2465933d-24f9-4b46-b841-493e3b523b1c" />
 
-*BƯỚC 4* Xem netlist sau khi biên dịch: Trên thanh tác vụ chọn: **Tools --> Netlist Viewer --> RTL Viewer**
+**BƯỚC 4** Xem netlist sau khi biên dịch: Trên thanh tác vụ chọn: **Tools --> Netlist Viewer --> RTL Viewer**
 
 <img width="1273" height="814" alt="image" src="https://github.com/user-attachments/assets/23cdb5ef-4872-404b-91a4-0e5ee5743b67" />
 
@@ -130,4 +130,28 @@ Cửa sổ Netlist hiện ra, sơ đồ kết nối RTL của hệ thống, kèm
 Chọn dấu + để mở bung các khối bên trong entity soc_system:u0. Các khối nào không có dấu + thì là phân cấp của nó là nhỏ nhất rồi. Trên thanh tác vụ: phóng to và thu nhỏ, lựa chọn khối cần xem, chế độ bird view...
 
 <img width="1524" height="743" alt="image" src="https://github.com/user-attachments/assets/c6640a8d-f8ef-47a5-8722-21a58b6cfa19" />
+
+**BƯỚC 5** Sau khi biên dịch thành công, file cấu hình SRAM (.sof) để nạp lên FPGA có định dạng **file_cau_hinh.sof** sẽ được tự động lưu vào thư mục output_files do Quartus tạo ra:
+
+<img width="1512" height="725" alt="image" src="https://github.com/user-attachments/assets/ac4bd861-a4d5-40e3-825b-823129c62019" />
+
+File .sof dùng để nạp cho FPGA như dưới đây
+
+<img width="1562" height="692" alt="image" src="https://github.com/user-attachments/assets/72d6bce2-0f89-46f0-9da4-baebd491e6ee" />
+
+**Cách tạo file rbf**
+
+1. Chọn file Raw Binary File (.rbf), 2. Chọn mode hoạt động x16 3. Chọn file .sof để add vào và Generate.
+ <img width="1554" height="810" alt="image" src="https://github.com/user-attachments/assets/ff76add5-c1b6-4652-bb3c-c2ee62c4b104" />
+
+<img width="1334" height="602" alt="image" src="https://github.com/user-attachments/assets/1e58759f-691c-40ca-8cae-3bcd7432b8c8" />
+
+**BƯỚC 6** Cấu hình FPGA: Trên thanh tác vụ: **Chọn Tools --> Programmer**
+
+<img width="1270" height="755" alt="image" src="https://github.com/user-attachments/assets/157fe686-e3c8-4742-80c2-d211bec38f67" />
+
+Chọn giống hình bên dưới, detect JTAG thành công (hiện DE-SOC trên thanh hardware) chọn Start để bắt đầu nạp: 
+
+<img width="1542" height="876" alt="image" src="https://github.com/user-attachments/assets/28a29e02-567a-488d-9beb-3843f2b210ae" />
+
 
