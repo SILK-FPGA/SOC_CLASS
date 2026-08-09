@@ -11,7 +11,7 @@ Chọn dự án **DE10_NANO_SoC_GHRD.qpf** để mở.
 
 <img width="1472" height="888" alt="image" src="https://github.com/user-attachments/assets/d7dee52d-96c4-4ea9-a84f-00d8dc155153" />
 
-Sau khi mở dự án lên, ta cần nắm những vị trí cơ bản của công cụ Quartus được đánh số như hình dưới
+Sau khi mở dự án lên, ta cần nắm những vị trí cơ bản của công cụ Quartus được **đánh số chú thích** như hình dưới
 
 <img width="1847" height="859" alt="image" src="https://github.com/user-attachments/assets/0c584c21-5117-49b4-9113-1aae5298a300" />
 
@@ -22,8 +22,8 @@ Sau khi mở dự án lên, ta cần nắm những vị trí cơ bản của cô
 
     <img width="1165" height="875" alt="image" src="https://github.com/user-attachments/assets/53ff9cca-1d74-43da-9027-355d4118c078" />
 
-3. Chế độ xem Hierachy: xem cấu trúc cây module, vị trí của các module từ top module tới các module con nhỏ hơn của dự án. Bấm vào dấu mũi tên màu đen sổ xuống bên cạnh module top **DE10_NANO_SoC_GHRD**
-để xem các module bên dưới nó.
+3. Chế độ xem Hierachy: xem cấu trúc cây module, vị trí của các module từ top module tới các module con nhỏ hơn của dự án. Bấm vào dấu mũi tên màu đen sổ xuống bên cạnh module top
+**DE10_NANO_SoC_GHRD** để xem các module bên dưới nó.
 
   <img width="684" height="587" alt="image" src="https://github.com/user-attachments/assets/aed9a018-19fe-4f69-add6-a7e8d53926fc" />
 
@@ -92,6 +92,42 @@ Constraint (.sdc):
           - Ràng buộc bất đồng bộ (False Path, Multicycle Path): set_clock_groups -asynchronous ...
           
           - Lưu ý thực tế: Nếu thiết kế bộ tăng tốc phần cứng chạy ở tần số cao, thiếu tệp .sdc sẽ khiến Fitter tối ưu đường chạy không chính xác, dẫn đến lỗi timing thực tế trên phần cứng dù mô phỏng             functional chạy đúng. File này phải do người dùng viết, tool không tự tạo ra.
-          - 
+            
 <img width="1855" height="963" alt="image" src="https://github.com/user-attachments/assets/92d8c9cd-cd29-4412-9ec2-b264a450dc0b" />
+
+## CÁC BƯỚC CHẠY DỰ ÁN
+
+*BƯỚC 1* Chạy biên dịch toàn bộ dự án với nút thực thi (đã đề cập ở 7.) hình tam giác màu xanh (Start Compilation) hoặc Ctrl + L
+
+<img width="1855" height="963" alt="image" src="https://github.com/user-attachments/assets/8be309dc-d800-44c3-9938-f573a747ea8d" />
+
+*BƯỚC 2* Mỗi khi thực hiện chỉnh sửa và lưu file, thanh trạng thái (đã đề cập ở 5.) sẽ hiện dấu ?, ta cần phải chạy lại tới khi hiện thành công (dấu tick màu xanh)
+
+<img width="692" height="865" alt="image" src="https://github.com/user-attachments/assets/b563ddfb-7b74-4b35-aff2-ed0e7c9686fa" />
+
+*BƯỚC 3* Để thêm hoặc xóa các file RTL .sv .v phục vụ cho biên dịch, ta làm các bước như sau:
+
+Trên thanh tác vụ chọn: **Project --> Add/Remove Files in Project...**
+
+<img width="572" height="544" alt="image" src="https://github.com/user-attachments/assets/b718af3a-ba24-4abe-93bf-7d72a90cf248" />
+
+Cửa sổ hiện ra, ta bấm vào "..." để chọn file --> Open.
+
+<img width="1116" height="868" alt="image" src="https://github.com/user-attachments/assets/086845b3-e648-41ee-8a6e-5bd7086bb7cd" />
+
+Sau khi mở xong, file sẽ hiện ra ngay cửa sổ phía dưới, ta có thể chọn Add để thêm file vào hệ thống, hoặc Remove để gỡ file khỏi hệ thống. Việc file nào xuất hiện sẽ quyết định hệ thống có biên dịch file đó khi compile hay không. Sau khi thực hiện thay đổi, chọn Apply để lưu. Sau khi xong vào chế độ xem Files (đề cập ở 6.) để check xem hệ thống đã thêm vào chưa nhé.
+
+<img width="1198" height="868" alt="image" src="https://github.com/user-attachments/assets/2465933d-24f9-4b46-b841-493e3b523b1c" />
+
+*BƯỚC 4* Xem netlist sau khi biên dịch: Trên thanh tác vụ chọn: **Tools --> Netlist Viewer --> RTL Viewer**
+
+<img width="1273" height="814" alt="image" src="https://github.com/user-attachments/assets/23cdb5ef-4872-404b-91a4-0e5ee5743b67" />
+
+Cửa sổ Netlist hiện ra, sơ đồ kết nối RTL của hệ thống, kèm các PIN I/O sẽ xuất hiện
+
+<img width="1850" height="1010" alt="image" src="https://github.com/user-attachments/assets/04e31d43-51d3-42ff-8e83-64583f514bcc" />
+
+Chọn dấu + để mở bung các khối bên trong entity soc_system:u0. Các khối nào không có dấu + thì là phân cấp của nó là nhỏ nhất rồi. Trên thanh tác vụ: phóng to và thu nhỏ, lựa chọn khối cần xem, chế độ bird view...
+
+<img width="1524" height="743" alt="image" src="https://github.com/user-attachments/assets/c6640a8d-f8ef-47a5-8722-21a58b6cfa19" />
 
