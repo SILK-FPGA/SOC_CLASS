@@ -1,2 +1,0 @@
-# QUARTUS VÀ CÁCH CẤU HÌNH CHI TIẾT CHO CÁC DỰ ÁN FPGA
-## TẠO DỰ ÁN ĐẦU TIÊN 
