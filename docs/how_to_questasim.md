@@ -82,3 +82,40 @@ Chọn dock/undock, undock cửa sổ waveform hiện tại để thu gọn tron
 Sau khi undock, cửa sổ WLF sẽ không nằm rieeng lẻ mà sẽ gom vào trong cửa sổ công cụ như hình dưới:
 
 <img width="1854" height="1050" alt="image" src="https://github.com/user-attachments/assets/cfd67653-53d7-4f0b-a5af-c419ce0e8f7c" />
+
+Xóa toàn bộ tín hiệu được tạo ra đi, vì nhìn sẽ bị rối mắt, ta chỉ thêm và giữ lại các tín hiệu muốn xem thôi:
+
+<img width="1305" height="735" alt="image" src="https://github.com/user-attachments/assets/5e55c6b4-ed7a-4091-9115-01236c173448" />
+
+Thêm lại tín hiệu mới trong mục Objects để xem sóng:
+
+<img width="1624" height="801" alt="image" src="https://github.com/user-attachments/assets/cdb201b7-64da-4088-b687-255ebac2c86e" />
+
+Click chuột vào cửa sổ sóng để hiện thanh cursor màu vàng cắt ngang, Bấm Ctrl + hoặc Ctrl - để phóng to và thu nhỏ, có thể cuộn chuột cũng được
+
+<img width="1838" height="893" alt="image" src="https://github.com/user-attachments/assets/c5109643-b3cf-42e9-8471-996b5f16aedb" />
+
+**make mem**: gọi các đối tượng bộ nhớ và xem giá trị của nó, make wave không thể xem được memory.
+
+Cửa sổ Memory List hiện ra, chọn đối tượng bộ nhớ cần xem --> giữ chuột trái --> kéo vào cửa sổ xem sóng
+
+<img width="1368" height="659" alt="image" src="https://github.com/user-attachments/assets/0613b812-9efa-4512-b279-ea4ac61ba926" />
+
+Khi kéo vào các đối tượng này chưa có giá trị
+
+<img width="1328" height="809" alt="image" src="https://github.com/user-attachments/assets/6e51433a-4405-42ec-9936-398cd698eaea" />
+
+Ta biên dịch lại để xuất hiện giá trị: Trên thanh tác vụ bấm và thao tác với biểu tượng như hình:
+
+<img width="1149" height="619" alt="image" src="https://github.com/user-attachments/assets/432fcf97-99f8-42be-8efd-92e724daf631" />
+
+Sau khi ấn Run -All --> Are you want to finish ? Chọn No. Sẽ hiện ra như hình dưới, nếu không hiện thì chọn biểu tượng Restart rồi chạy Run -All lại:
+
+<img width="1164" height="821" alt="image" src="https://github.com/user-attachments/assets/0d145b4b-19fc-4210-a4a7-045369234329" />
+
+
+
+
+
+
+
