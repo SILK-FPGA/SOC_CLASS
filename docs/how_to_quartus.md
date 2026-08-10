@@ -141,6 +141,7 @@ File .sof dùng để nạp cho FPGA như dưới đây
 
 **Cách tạo file rbf**
 
+Trên thanh tác vụ: **Chọn File --> Convert Programming Files...**
 1. Chọn file Raw Binary File (.rbf), 2. Chọn mode hoạt động x16 3. Chọn file .sof để add vào và Generate.
  <img width="1554" height="810" alt="image" src="https://github.com/user-attachments/assets/ff76add5-c1b6-4652-bb3c-c2ee62c4b104" />
 
