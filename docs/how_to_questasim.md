@@ -71,7 +71,7 @@ Cửa sổ hiện ra
 
 <img width="1855" height="1023" alt="image" src="https://github.com/user-attachments/assets/be38ccce-0a57-4f18-9ea3-104676c4894c" />
 
-Bấm chữ 'f' trên màn hình để thu tỉ lệ fit với cửa sổ:
+Bấm chữ 'f' trên bàn phím laptop để thu tỉ lệ fit với cửa sổ:
 
 <img width="1855" height="1023" alt="image" src="https://github.com/user-attachments/assets/73c7a0e5-919f-41f4-9586-bd47bf3f2d46" />
 
