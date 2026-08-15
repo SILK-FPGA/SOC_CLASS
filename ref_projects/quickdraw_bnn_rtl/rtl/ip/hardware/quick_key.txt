@@ -1,0 +1,9 @@
+//bien dich toan bo he thong
+verilator -Wall -Wno-EOFNEWLINE -Wno-fatal --trace-fst -y . \
+--cc fc1_constants.sv bnn_soc_wrapper.sv read_avalon_sdr.sv buffer_AI.sv bdscnn_top.sv ai_result_register.sv \
+--exe sim_main.cpp SdramVIP.cpp HpsVIP.cpp \
+--build --top-module bnn_soc_wrapper
+
+//chay file thuc thi
+./obj_dir/Vbnn_soc_wrapper
+

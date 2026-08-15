@@ -1,0 +1,93 @@
+module dw_top (
+    input  logic         clk,
+    input  logic         rst_n,
+
+    // Giao diện ngõ vào từ lớp MCP
+    input  logic         mcp_valid,
+    input  logic [2:0]   mcp_data,     // Mỗi pixel có 3 kênh (3 bit)
+
+    // Giao diện ngõ ra tới lớp PW
+    output logic         dw_valid,
+    output logic [11:0]  dw_data_out   // 3 kênh x 4 bit số nguyên = 12 bit
+);
+
+
+    logic        win_valid;
+    logic [26:0] win_data; // 9 pixel x 3 kênh = 27 bit
+
+    window3x3s1 #(
+        .DATA_WIDTH(3), 
+        .IMG_WIDTH(15)     // Ảnh từ MCP xuất ra có kích thước 15x15
+    ) u_window (
+        .clk         (clk),
+        .rst_n       (rst_n),
+        .din_valid   (mcp_valid),
+        .din         (mcp_data),
+        .dout_valid  (win_valid),
+        .dout_window (win_data)
+    );
+
+
+    
+    localparam logic [8:0] dw_weights [0:2] = '{
+        9'h092,
+        9'h01b,
+        9'h007
+    };
+
+
+    logic [8:0] ch0_win, ch1_win, ch2_win;
+    
+    genvar i;
+    generate
+        // Tách cáp 27-bit thành 3 bó 9-bit độc lập cho từng kênh
+        for (i = 0; i < 9; i++) begin : gen_untangle
+            assign ch0_win[i] = win_data[i*3 + 0];
+            assign ch1_win[i] = win_data[i*3 + 1];
+            assign ch2_win[i] = win_data[i*3 + 2];
+        end
+    endgenerate
+
+    logic       valid_out_arr [0:2];
+    logic [3:0] data_out_ch0, data_out_ch1, data_out_ch2;
+
+    dw_pe pe_ch0 (
+        .clk       (clk),
+        .rst_n     (rst_n),
+        .valid_in  (win_valid),
+        .window_in (ch0_win),
+        .weight_in (dw_weights[0]),
+        .valid_out (valid_out_arr[0]),
+        .data_out  (data_out_ch0)
+    );
+
+    dw_pe pe_ch1 (
+        .clk       (clk),
+        .rst_n     (rst_n),
+        .valid_in  (win_valid),
+        .window_in (ch1_win),
+        .weight_in (dw_weights[1]),
+        .valid_out (valid_out_arr[1]),
+        .data_out  (data_out_ch1)
+    );
+
+    dw_pe pe_ch2 (
+        .clk       (clk),
+        .rst_n     (rst_n),
+        .valid_in  (win_valid),
+        .window_in (ch2_win),
+        .weight_in (dw_weights[2]),
+        .valid_out (valid_out_arr[2]),
+        .data_out  (data_out_ch2)
+    );
+
+  
+    // ==========================================
+    // 3 lõi PE chạy hoàn toàn song song cùng một sườn clock, 
+    // nên chỉ cần lấy cờ Valid của kênh 0 làm cờ đại diện cho toàn khối.
+    assign dw_valid    = valid_out_arr[0];
+    
+    // Ghép 3 số nguyên 4-bit lại thành sợi cáp 12 bit (CH2 | CH1 | CH0)
+    assign dw_data_out = {data_out_ch2, data_out_ch1, data_out_ch0};
+
+endmodule

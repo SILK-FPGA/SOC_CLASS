@@ -1,0 +1,18 @@
+Fitter Status : Successful - Fri Jun 26 16:13:49 2026
+Quartus Prime Version : 20.1.1 Build 720 11/11/2020 SJ Lite Edition
+Revision Name : bdscnn_top
+Top-level Entity Name : bdscnn_ecg_tb
+Family : MAX 10
+Device : 10M50DAF484C7G
+Timing Models : Final
+Total logic elements : 10,564 / 49,760 ( 21 % )
+    Total combinational functions : 10,424 / 49,760 ( 21 % )
+    Dedicated logic registers : 938 / 49,760 ( 2 % )
+Total registers : 938
+Total pins : 10 / 360 ( 3 % )
+Total virtual pins : 0
+Total memory bits : 142 / 1,677,312 ( < 1 % )
+Embedded Multiplier 9-bit elements : 0 / 288 ( 0 % )
+Total PLLs : 0 / 4 ( 0 % )
+UFM blocks : 0 / 1 ( 0 % )
+ADC blocks : 0 / 2 ( 0 % )

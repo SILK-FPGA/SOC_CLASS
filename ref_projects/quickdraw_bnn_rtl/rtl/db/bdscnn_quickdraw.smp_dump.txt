@@ -1,0 +1,61 @@
+
+State Machine - |DE10_NANO|buffer_AI:buffer_soc_ai|state
+Name state.ST_HOLD state.ST_WAIT_RESULT state.ST_STREAM state.ST_RELEASE_RESET state.ST_SETTLE state.ST_IDLE 
+state.ST_IDLE 0 0 0 0 0 0 
+state.ST_SETTLE 0 0 0 0 1 1 
+state.ST_RELEASE_RESET 0 0 0 1 0 1 
+state.ST_STREAM 0 0 1 0 0 1 
+state.ST_WAIT_RESULT 0 1 0 0 0 1 
+state.ST_HOLD 1 0 0 0 0 1 
+
+State Machine - |DE10_NANO|soc_system:u0|soc_system_mm_interconnect_0:mm_interconnect_0|altera_merlin_burst_adapter:pio_1_s1_burst_adapter|altera_merlin_burst_adapter_13_1:altera_merlin_burst_adapter_13_1.burst_adapter|state
+Name state.ST_IDLE state.ST_UNCOMP_WR_SUBBURST state.ST_UNCOMP_TRANS state.ST_COMP_TRANS 
+state.ST_IDLE 0 0 0 0 
+state.ST_COMP_TRANS 1 0 0 1 
+state.ST_UNCOMP_TRANS 1 0 1 0 
+state.ST_UNCOMP_WR_SUBBURST 1 1 0 0 
+
+State Machine - |DE10_NANO|i2ctx:tx|state
+Name state.STOP state.REPEAT_START state.ACK state.TX_BYTE state.START state.IDLE state.HOLD_ACK 
+state.IDLE 0 0 0 0 0 0 0 
+state.START 0 0 0 0 1 1 0 
+state.TX_BYTE 0 0 0 1 0 1 0 
+state.ACK 0 0 1 0 0 1 0 
+state.REPEAT_START 0 1 0 0 0 1 0 
+state.STOP 1 0 0 0 0 1 0 
+state.HOLD_ACK 0 0 0 0 0 1 1 
+
+State Machine - |DE10_NANO|i2ctx:tx|bstate
+Name bstate.REPEAT_START bstate.TX_BYTE bstate.0000 bstate.STOP 
+bstate.0000 0 0 0 0 
+bstate.TX_BYTE 0 1 1 0 
+bstate.REPEAT_START 1 0 1 0 
+bstate.STOP 0 0 1 1 
+
+State Machine - |DE10_NANO|hdmi_i2c_config:i2c_config|state
+Name state.IDLE state.STOP state.SEND 
+state.IDLE 0 0 0 
+state.SEND 1 0 1 
+state.STOP 1 1 0 
+
+State Machine - |DE10_NANO|soc_system:u0|read_avalon_sdr:read_avalon_sdr_0|state
+Name state.READ_STOP state.READ_END state.READ_START state.INIT state.READ_DELAY 
+state.INIT 0 0 0 0 0 
+state.READ_START 0 0 1 1 0 
+state.READ_END 0 1 0 1 0 
+state.READ_STOP 1 0 0 1 0 
+state.READ_DELAY 0 0 0 1 1 
+
+State Machine - |DE10_NANO|soc_system:u0|soc_system_mm_interconnect_0:mm_interconnect_0|altera_merlin_burst_adapter:pio_0_s1_burst_adapter|altera_merlin_burst_adapter_13_1:altera_merlin_burst_adapter_13_1.burst_adapter|state
+Name state.ST_IDLE state.ST_UNCOMP_WR_SUBBURST state.ST_UNCOMP_TRANS state.ST_COMP_TRANS 
+state.ST_IDLE 0 0 0 0 
+state.ST_COMP_TRANS 1 0 0 1 
+state.ST_UNCOMP_TRANS 1 0 1 0 
+state.ST_UNCOMP_WR_SUBBURST 1 1 0 0 
+
+State Machine - |DE10_NANO|soc_system:u0|soc_system_mm_interconnect_1:mm_interconnect_1|altera_merlin_burst_adapter:hps_0_f2h_sdram0_data_burst_adapter|altera_merlin_burst_adapter_13_1:altera_merlin_burst_adapter_13_1.burst_adapter|state
+Name state.ST_IDLE state.ST_UNCOMP_WR_SUBBURST state.ST_UNCOMP_TRANS state.ST_COMP_TRANS 
+state.ST_IDLE 0 0 0 0 
+state.ST_COMP_TRANS 1 0 0 1 
+state.ST_UNCOMP_TRANS 1 0 1 0 
+state.ST_UNCOMP_WR_SUBBURST 1 1 0 0 

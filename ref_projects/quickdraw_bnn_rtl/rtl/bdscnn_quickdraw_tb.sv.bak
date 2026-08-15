@@ -1,0 +1,49 @@
+module bdscnn_quickdraw_tb (
+    input  logic       clk,      // 50MHz
+    input  logic       rst_n,    // SW[0]
+    output logic [7:0] ledr      // LED
+);
+
+    import hw_stimulus::*;
+
+    logic [10:0] stream_cnt;
+    logic        sys_valid;
+    logic [1:0]  class_result;
+
+    // Bộ đếm "tự động hành quyết" ngay khi nhả Reset
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            stream_cnt <= '0;
+        end else if (stream_cnt < 11'd1024) begin
+            stream_cnt <= stream_cnt + 1'b1;
+        end
+    end
+
+    // Gắn trực tiếp vào AI (Bỏ qua pipeline register để test logic thô)
+    bdscnn_top u_bdscnn (
+        .clk       (clk),
+        .rst_n     (rst_n),
+        .img_valid (stream_cnt < 11'd1024), 
+        .img_data  (TEST_IMG[stream_cnt]), 
+        .rr_data   (TEST_RR),              
+        .sys_valid (sys_valid),
+        .class_out (class_result)
+    );
+
+    // Chốt LED
+    logic [7:0] led_reg;
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n) led_reg <= 8'b0;
+        else if (sys_valid) begin
+            case (class_result)
+                2'b00: led_reg <= 8'b1000_0001; // Sáng LEDR7 (Done) + LEDR0
+                2'b01: led_reg <= 8'b1000_0010; // Sáng LEDR7 (Done) + LEDR1
+                2'b10: led_reg <= 8'b1000_0100; // Sáng LEDR7 (Done) + LEDR2
+                default: led_reg <= 8'b1000_0000;
+            endcase
+        end
+    end
+
+    assign ledr = led_reg;
+
+endmodule

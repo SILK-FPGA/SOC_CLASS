@@ -1,0 +1,49 @@
+module fc1_folded_top (
+    input  logic         clk,
+    input  logic         rst_n,
+    input  logic         pw_valid,
+    input  logic [17:0]  pw_data,
+    output logic         fc1_valid,
+    output logic [63:0]  fc1_data_out 
+);
+    
+
+
+    logic [7:0] pixel_cnt;
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            pixel_cnt <= '0;
+        end else if (pw_valid) begin
+            if (pixel_cnt == 8'd168)
+                pixel_cnt <= '0;
+            else
+                pixel_cnt <= pixel_cnt + 1'b1;
+        end
+    end
+
+
+    logic [63:0] valid_out_arr;
+    
+    genvar i;
+    generate
+        for (i = 0; i < 64; i++) begin : gen_fc1_neurons
+            
+            logic [17:0] current_weight_fm;
+            assign current_weight_fm = FC1_WEIGHTS[i][pixel_cnt * 18 +: 18];
+
+            fc1_folded_neuron u_neuron (
+                .clk       (clk),
+                .rst_n     (rst_n),
+                .pw_valid  (pw_valid),
+                .pixel_cnt (pixel_cnt),
+                .pw_data   (pw_data),
+                .weight_fm (current_weight_fm),
+                .thresh_in (FC1_THRESH[i]),
+                .valid_out (valid_out_arr[i]),
+                .data_out  (fc1_data_out[i])
+            );
+        end
+    endgenerate
+
+    assign fc1_valid = valid_out_arr[0];
+endmodule

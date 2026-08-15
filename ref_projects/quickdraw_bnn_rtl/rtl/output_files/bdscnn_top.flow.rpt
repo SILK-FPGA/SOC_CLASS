@@ -1,0 +1,134 @@
+Flow report for bdscnn_top
+Fri Jun 26 17:27:52 2026
+Quartus Prime Version 20.1.1 Build 720 11/11/2020 SJ Lite Edition
+
+
+---------------------
+; Table of Contents ;
+---------------------
+  1. Legal Notice
+  2. Flow Summary
+  3. Flow Settings
+  4. Flow Non-Default Global Settings
+  5. Flow Elapsed Time
+  6. Flow OS Summary
+  7. Flow Log
+  8. Flow Messages
+  9. Flow Suppressed Messages
+
+
+
+----------------
+; Legal Notice ;
+----------------
+Copyright (C) 2020  Intel Corporation. All rights reserved.
+Your use of Intel Corporation's design tools, logic functions 
+and other software and tools, and any partner logic 
+functions, and any output files from any of the foregoing 
+(including device programming or simulation files), and any 
+associated documentation or information are expressly subject 
+to the terms and conditions of the Intel Program License 
+Subscription Agreement, the Intel Quartus Prime License Agreement,
+the Intel FPGA IP License Agreement, or other applicable license
+agreement, including, without limitation, that your use is for
+the sole purpose of programming logic devices manufactured by
+Intel and sold by Intel or its authorized distributors.  Please
+refer to the applicable agreement for further details, at
+https://fpgasoftware.intel.com/eula.
+
+
+
++----------------------------------------------------------------------------------+
+; Flow Summary                                                                     ;
++------------------------------------+---------------------------------------------+
+; Flow Status                        ; Successful - Fri Jun 26 17:27:52 2026       ;
+; Quartus Prime Version              ; 20.1.1 Build 720 11/11/2020 SJ Lite Edition ;
+; Revision Name                      ; bdscnn_top                                  ;
+; Top-level Entity Name              ; bdscnn_ecg_tb                               ;
+; Family                             ; MAX 10                                      ;
+; Device                             ; 10M50DAF484C7G                              ;
+; Timing Models                      ; Final                                       ;
+; Total logic elements               ; 10,564 / 49,760 ( 21 % )                    ;
+;     Total combinational functions  ; 10,424 / 49,760 ( 21 % )                    ;
+;     Dedicated logic registers      ; 938 / 49,760 ( 2 % )                        ;
+; Total registers                    ; 938                                         ;
+; Total pins                         ; 10 / 360 ( 3 % )                            ;
+; Total virtual pins                 ; 0                                           ;
+; Total memory bits                  ; 142 / 1,677,312 ( < 1 % )                   ;
+; Embedded Multiplier 9-bit elements ; 0 / 288 ( 0 % )                             ;
+; Total PLLs                         ; 0 / 4 ( 0 % )                               ;
+; UFM blocks                         ; 0 / 1 ( 0 % )                               ;
+; ADC blocks                         ; 0 / 2 ( 0 % )                               ;
++------------------------------------+---------------------------------------------+
+
+
++-----------------------------------------+
+; Flow Settings                           ;
++-------------------+---------------------+
+; Option            ; Setting             ;
++-------------------+---------------------+
+; Start date & time ; 06/26/2026 16:11:16 ;
+; Main task         ; Compilation         ;
+; Revision Name     ; bdscnn_top          ;
++-------------------+---------------------+
+
+
++---------------------------------------------------------------------------------------------------------------------------+
+; Flow Non-Default Global Settings                                                                                          ;
++-------------------------------------+----------------------------------------+---------------+---------------+------------+
+; Assignment Name                     ; Value                                  ; Default Value ; Entity Name   ; Section Id ;
++-------------------------------------+----------------------------------------+---------------+---------------+------------+
+; COMPILER_SIGNATURE_ID               ; 180604365294894.178246507613695        ; --            ; --            ; --         ;
+; MAX_CORE_JUNCTION_TEMP              ; 85                                     ; --            ; --            ; --         ;
+; MIN_CORE_JUNCTION_TEMP              ; 0                                      ; --            ; --            ; --         ;
+; PARTITION_COLOR                     ; -- (Not supported for targeted family) ; --            ; bdscnn_ecg_tb ; Top        ;
+; PARTITION_FITTER_PRESERVATION_LEVEL ; -- (Not supported for targeted family) ; --            ; bdscnn_ecg_tb ; Top        ;
+; PARTITION_NETLIST_TYPE              ; -- (Not supported for targeted family) ; --            ; bdscnn_ecg_tb ; Top        ;
+; POWER_BOARD_THERMAL_MODEL           ; None (CONSERVATIVE)                    ; --            ; --            ; --         ;
+; POWER_PRESET_COOLING_SOLUTION       ; 23 MM HEAT SINK WITH 200 LFPM AIRFLOW  ; --            ; --            ; --         ;
+; PROJECT_OUTPUT_DIRECTORY            ; output_files                           ; --            ; --            ; --         ;
+; TOP_LEVEL_ENTITY                    ; bdscnn_ecg_tb                          ; bdscnn_top    ; --            ; --         ;
++-------------------------------------+----------------------------------------+---------------+---------------+------------+
+
+
++--------------------------------------------------------------------------------------------------------------------------+
+; Flow Elapsed Time                                                                                                        ;
++----------------------+--------------+-------------------------+---------------------+------------------------------------+
+; Module Name          ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
++----------------------+--------------+-------------------------+---------------------+------------------------------------+
+; Analysis & Synthesis ; 00:01:38     ; 1.0                     ; 815 MB              ; 00:01:49                           ;
+; Fitter               ; 00:00:53     ; 1.5                     ; 1230 MB             ; 00:01:42                           ;
+; Assembler            ; 00:00:03     ; 1.0                     ; 379 MB              ; 00:00:03                           ;
+; Timing Analyzer      ; 00:00:09     ; 2.4                     ; 631 MB              ; 00:00:21                           ;
+; Power Analyzer       ; 00:00:13     ; 1.6                     ; 948 MB              ; 00:00:20                           ;
+; Power Analyzer       ; 00:00:08     ; 2.0                     ; 925 MB              ; 00:00:15                           ;
+; Total                ; 00:03:04     ; --                      ; --                  ; 00:04:30                           ;
++----------------------+--------------+-------------------------+---------------------+------------------------------------+
+
+
++---------------------------------------------------------------------------------------------------+
+; Flow OS Summary                                                                                   ;
++----------------------+-----------------------------+----------------+------------+----------------+
+; Module Name          ; Machine Hostname            ; OS Name        ; OS Version ; Processor type ;
++----------------------+-----------------------------+----------------+------------+----------------+
+; Analysis & Synthesis ; ctw-fpga-ThinkPad-X13-Gen-1 ; Ubuntu 24.04.3 ; 24         ; x86_64         ;
+; Fitter               ; ctw-fpga-ThinkPad-X13-Gen-1 ; Ubuntu 24.04.3 ; 24         ; x86_64         ;
+; Assembler            ; ctw-fpga-ThinkPad-X13-Gen-1 ; Ubuntu 24.04.3 ; 24         ; x86_64         ;
+; Timing Analyzer      ; ctw-fpga-ThinkPad-X13-Gen-1 ; Ubuntu 24.04.3 ; 24         ; x86_64         ;
+; Power Analyzer       ; ctw-fpga-ThinkPad-X13-Gen-1 ; Ubuntu 24.04.3 ; 24         ; x86_64         ;
+; Power Analyzer       ; ctw-fpga-ThinkPad-X13-Gen-1 ; Ubuntu 24.04.3 ; 24         ; x86_64         ;
++----------------------+-----------------------------+----------------+------------+----------------+
+
+
+------------
+; Flow Log ;
+------------
+quartus_map --read_settings_files=on --write_settings_files=off bdscnn_ecg -c bdscnn_top
+quartus_fit --read_settings_files=off --write_settings_files=off bdscnn_ecg -c bdscnn_top
+quartus_asm --read_settings_files=off --write_settings_files=off bdscnn_ecg -c bdscnn_top
+quartus_sta bdscnn_ecg -c bdscnn_top
+quartus_pow --read_settings_files=on --write_settings_files=off bdscnn_ecg -c bdscnn_top
+quartus_pow --read_settings_files=on --write_settings_files=off bdscnn_ecg -c bdscnn_top
+
+
+

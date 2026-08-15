@@ -1,0 +1,153 @@
+module bdscnn_quickdraw (
+    input  logic       clk,
+    input  logic       rst_n,
+    input  logic       uart_rxd,   // Fix: Bổ sung chân rx bị thiếu ở khai báo
+    input  logic       start,      // Nút nhấn User Button
+    output logic [3:0] ledr,
+    output logic [6:0] hex0
+);
+
+    parameter BIT_RATE = 115200;
+    parameter CLK_HZ   = 50000000; // Tần số cấp cho DE10-Nano
+    parameter PAYLOAD_BITS = 8;
+    parameter STOP_BITS    = 1;
+
+    // Tín hiệu UART
+    logic       rx_valid;
+    logic [7:0] rx_data;
+    
+    // Bộ nhớ và thanh ghi trạng thái
+    logic [1023:0] img_buffer;    // Buffer ảnh
+    logic [3:0]    patient_rr;    // Thanh ghi chứa RR của bệnh nhân
+    logic [10:0]   byte_cnt;      // Đếm lúc nạp (0 -> 1024)
+    logic          load_done;
+
+    // Tín hiệu luồng suy luận
+    logic          is_streaming;
+    logic [10:0]   stream_cnt;    // Đếm lúc bơm vào AI (0 -> 1023)
+    logic [1:0]    class_result;
+    logic          sys_valid;
+
+    // 1. Tích hợp module UART
+    uart_rx #(
+        .BIT_RATE(BIT_RATE),
+        .CLK_HZ(CLK_HZ),
+        .PAYLOAD_BITS(PAYLOAD_BITS),
+        .STOP_BITS(STOP_BITS)
+    ) uart_rx_inst (
+        .clk(clk),
+        .resetn(1'b1),
+        .uart_rxd(uart_rxd),
+        .uart_rx_read(1'b1),        
+        .uart_rx_valid(rx_valid),
+        .uart_rx_data(rx_data)
+    );
+
+    // Định nghĩa các trạng thái cho FSM UART RX
+    typedef enum logic [1:0] {
+        S_WAIT_H1,  // Chờ 0xAA
+        S_WAIT_H2,  // Chờ 0x55
+        S_RECEIVE   // Đọc 1025 byte (RR + Img)
+    } state_t;
+    
+    state_t rx_state;
+
+    // 2. FSM Nhận dữ liệu an toàn có Sync Word
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            rx_state   <= S_WAIT_H1;
+            byte_cnt   <= 0;
+            load_done  <= 0;
+            patient_rr <= 0;
+        end else if (rx_valid && !load_done) begin
+            case (rx_state)
+                S_WAIT_H1: begin
+                    if (rx_data == 8'hAA) rx_state <= S_WAIT_H2;
+                end
+                
+                S_WAIT_H2: begin
+                    if (rx_data == 8'h55) rx_state <= S_RECEIVE;
+                    else if (rx_data != 8'hAA) rx_state <= S_WAIT_H1; // Sai mật khẩu, quay lại từ đầu
+                end
+                
+                S_RECEIVE: begin
+                    if (byte_cnt == 0) begin
+                        patient_rr <= rx_data[3:0]; // Bắt Byte RR
+                    end else begin
+                        img_buffer[byte_cnt - 1] <= rx_data[0]; // Bắt 1024 Byte ảnh
+                    end
+                    
+                    if (byte_cnt == 1024) begin
+                        load_done <= 1; // Xong cờ, chốt khóa an toàn
+                        // Không quay lại S_WAIT_H1 cho đến khi có rst_n
+                    end else begin
+                        byte_cnt <= byte_cnt + 1;
+                    end
+                end
+            endcase
+        end
+    end
+
+    assign ledr[0] = load_done;
+
+    // 3. FSM Bơm dữ liệu vào AI (Kích hoạt bằng nút start)
+    // Giả sử nút nhấn start được thiết kế tích cực cao (nhấn = 1)
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            is_streaming <= 0;
+            stream_cnt   <= 0;
+        end else begin
+            if (start && load_done && !is_streaming) begin
+                // Bắt đầu bơm
+                is_streaming <= 1;
+                stream_cnt   <= 0;
+            end else if (is_streaming) begin
+                if (stream_cnt < 1024) begin
+                    stream_cnt <= stream_cnt + 1;
+                end else begin
+                    // Bơm xong 1024 pixel, ngắt luồng
+                    is_streaming <= 0; 
+                end
+            end
+        end
+    end
+
+    // 4. Gọi bộ lõi AI
+    bdscnn_top u_bdscnn (
+        .clk(clk), 
+        .rst_n(1'b1),
+        .img_valid(is_streaming && (stream_cnt < 1024)), // Chỉ Valid đúng 1024 nhịp
+        .img_data(img_buffer[stream_cnt]),               // Stream bằng bộ đếm chuẩn
+        .rr_data(patient_rr),                            // RR truyền trực tiếp từ thanh ghi
+        .sys_valid(sys_valid),
+        .class_out(class_result)
+    );
+
+    // 5. Giải mã LED và HEX0
+    logic [1:0] final_class;
+    
+    // Chốt kết quả lại khi sys_valid kích hoạt để HEX0 hiển thị lâu dài
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n) final_class <= 2'b11; // 11: Trạng thái chờ
+        else if (sys_valid) final_class <= class_result;
+    end
+
+    always_comb begin
+        // Hiển thị LEDR
+        case(final_class)
+            2'b00: {ledr[3], ledr[2], ledr[1]} = 3'b001; // Class 0
+            2'b01: {ledr[3], ledr[2], ledr[1]} = 3'b010; // Class 1
+            2'b10: {ledr[3], ledr[2], ledr[1]} = 3'b100; // Class 2
+            default: {ledr[3], ledr[2], ledr[1]} = 3'b000;
+        endcase
+
+        // Hiển thị HEX0
+        case(final_class)
+            2'b00: hex0 = 7'b1000000; // 0
+            2'b01: hex0 = 7'b1111001; // 1
+            2'b10: hex0 = 7'b0100100; // 2
+            default: hex0 = 7'b1111111; // Tắt (Chưa có kết quả)
+        endcase
+    end
+
+endmodule

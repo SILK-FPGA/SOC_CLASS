@@ -1,0 +1,16 @@
+Analysis & Synthesis Status : Successful - Fri Jun 26 16:12:55 2026
+Quartus Prime Version : 20.1.1 Build 720 11/11/2020 SJ Lite Edition
+Revision Name : bdscnn_top
+Top-level Entity Name : bdscnn_ecg_tb
+Family : MAX 10
+Total logic elements : 10,631
+    Total combinational functions : 10,224
+    Dedicated logic registers : 938
+Total registers : 938
+Total pins : 10
+Total virtual pins : 0
+Total memory bits : 142
+Embedded Multiplier 9-bit elements : 0
+Total PLLs : 0
+UFM blocks : 0
+ADC blocks : 0

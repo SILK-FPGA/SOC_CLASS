@@ -1,0 +1,156 @@
+module buffer_hdmi (	
+	input  logic         rstn_i,
+	
+	// AVALON
+	input  logic         avl_clk_i,
+	input  logic         avl_reset_i,
+	input  logic [255:0] avl_data_i,
+	input  logic         avl_enable_i,
+	output logic         avl_done_o,
+	
+	// HDMI
+	input  logic         hdmi_clk_i,
+	input  logic         hdmi_reset_i,
+	input  logic         hdmi_enable_i,
+	output logic [7:0]   hdmi_data_o
+);
+
+	parameter H_RES = 160;
+	parameter V_RES = 120;
+
+	localparam FRAME_SIZE  = H_RES * V_RES;          // 19200 bytes
+	localparam AVL_BYTES   = 32;                     // 256-bit = 32 bytes
+	localparam AVL_WORDS   = FRAME_SIZE / AVL_BYTES; // 600 words
+
+	localparam AVL_COUNT_W = $clog2(AVL_WORDS + 1);
+	localparam MEM_ADDR_W  = $clog2(FRAME_SIZE);
+	localparam WORD_ADDR_W = $clog2(AVL_WORDS);
+
+	(* ramstyle = "M10K" *)
+	logic [255:0] mem [0:AVL_WORDS-1];
+
+	// =====================================================
+	// AVALON WRITE SIDE
+	// =====================================================
+	logic [AVL_COUNT_W-1:0] avl_count;
+
+	logic avl_reset_rise;
+	logic avl_reset_reg;
+
+	assign avl_reset_rise = !avl_reset_reg & avl_reset_i;
+
+	always_ff @(posedge avl_clk_i) begin
+		if (!rstn_i) begin
+			avl_reset_reg <= 1'b0;
+			avl_count     <= '0;
+			avl_done_o    <= 1'b0;
+		end else begin
+			avl_reset_reg <= avl_reset_i;
+
+			if (avl_reset_rise) begin
+				avl_count  <= '0;
+				avl_done_o <= 1'b0;
+			end else begin
+				if (avl_enable_i && !avl_done_o) begin
+					mem[avl_count[WORD_ADDR_W-1:0]] <= avl_data_i;
+
+					if (avl_count == AVL_WORDS-1) begin
+						avl_done_o <= 1'b1;
+					end else begin
+						avl_count <= avl_count + 1'b1;
+					end
+				end
+			end
+		end
+	end
+
+	// =====================================================
+	// HDMI READ SIDE
+	// =====================================================
+	localparam HDMI_H_RES = H_RES * 4;   // 640
+	localparam HDMI_V_RES = V_RES * 4;   // 480
+
+	localparam HDMI_X_W = $clog2(HDMI_H_RES);
+	localparam HDMI_Y_W = $clog2(HDMI_V_RES);
+
+	logic [HDMI_X_W-1:0] hdmi_x;
+	logic [HDMI_Y_W-1:0] hdmi_y;
+
+	logic [$clog2(H_RES)-1:0] src_x;
+	logic [$clog2(V_RES)-1:0] src_y;
+
+	logic [31:0] pixel_addr_calc;
+	logic [MEM_ADDR_W-1:0] pixel_addr;
+
+	logic [WORD_ADDR_W-1:0] word_addr;
+	logic [4:0] byte_sel;
+
+	logic [255:0] hdmi_word;
+	logic [4:0]   byte_sel_d;
+
+	logic hdmi_reset_rise;
+	logic hdmi_reset_reg;
+
+	assign hdmi_reset_rise = !hdmi_reset_reg & hdmi_reset_i;
+
+	// 640x480 -> 160x120, scale x4
+	assign src_x = hdmi_x[9:2];
+	assign src_y = hdmi_y[8:2];
+
+	assign pixel_addr_calc = src_y * H_RES + src_x;
+	assign pixel_addr      = pixel_addr_calc[MEM_ADDR_W-1:0];
+
+	assign word_addr = pixel_addr[MEM_ADDR_W-1:5]; // /32
+	assign byte_sel  = pixel_addr[4:0];            // %32
+
+	// =====================================================
+	// IMPORTANT: dedicated synchronous RAM read
+	// =====================================================
+	always_ff @(posedge hdmi_clk_i) begin
+		hdmi_word <= mem[word_addr];
+	end
+
+	// =====================================================
+	// HDMI counter + output byte select
+	// =====================================================
+	always_ff @(posedge hdmi_clk_i) begin
+		if (!rstn_i) begin
+			hdmi_reset_reg <= 1'b0;
+			hdmi_x         <= '0;
+			hdmi_y         <= '0;
+			byte_sel_d     <= '0;
+			hdmi_data_o    <= 8'h00;
+		end else begin
+			hdmi_reset_reg <= hdmi_reset_i;
+
+			if (hdmi_reset_rise) begin
+				hdmi_x      <= '0;
+				hdmi_y      <= '0;
+				byte_sel_d  <= '0;
+				hdmi_data_o <= 8'h00;
+			end else begin
+				if (hdmi_enable_i) begin
+					byte_sel_d <= byte_sel;
+
+					// hdmi_word là data RAM đọc từ clock trước
+					hdmi_data_o <= hdmi_word[byte_sel_d*8 +: 8];
+
+					if (hdmi_x == HDMI_H_RES-1) begin
+						hdmi_x <= '0;
+
+						if (hdmi_y == HDMI_V_RES-1) begin
+							hdmi_y <= '0;
+						end else begin
+							hdmi_y <= hdmi_y + 1'b1;
+						end
+					end else begin
+						hdmi_x <= hdmi_x + 1'b1;
+					end
+				end else begin
+					hdmi_data_o <= 8'h00;
+				end
+			end
+		end
+	end
+
+endmodule

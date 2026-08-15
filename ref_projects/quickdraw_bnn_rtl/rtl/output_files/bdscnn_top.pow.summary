@@ -1,0 +1,12 @@
+Power Analyzer Status : Successful - Fri Jun 26 17:27:52 2026
+Quartus Prime Version : 20.1.1 Build 720 11/11/2020 SJ Lite Edition
+Revision Name : bdscnn_top
+Top-level Entity Name : bdscnn_ecg_tb
+Family : MAX 10
+Device : 10M50DAF484C7G
+Power Models : Final
+Total Thermal Power Dissipation : 144.86 mW
+Core Dynamic Thermal Power Dissipation : 45.52 mW
+Core Static Thermal Power Dissipation : 90.15 mW
+I/O Thermal Power Dissipation : 9.19 mW
+Power Estimation Confidence : Low: user provided insufficient toggle rate data

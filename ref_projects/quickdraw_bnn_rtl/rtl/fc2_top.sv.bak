@@ -1,0 +1,111 @@
+module fc2_top (
+    input  logic         clk,
+    input  logic         rst_n,
+    
+    // Ngõ vào từ FC1
+    input  logic         fc1_valid,
+    input  logic [31:0]  fc1_data_in,
+    
+    // Ngõ ra kết quả cuối cùng
+    output logic         fc2_valid,
+    output logic [1:0]   class_out    // 00: ARR, 01: CHF, 10: NSR
+);
+
+    // ==========================================
+    // KHỞI TẠO BỘ NHỚ (WEIGHTS & LUTS)
+    // ==========================================
+    logic [31:0]        fc2_weights [0:2];
+    (* romstyle = "logic" *)logic signed [31:0] lut_0 [0:32];
+    (* romstyle = "logic" *)logic signed [31:0] lut_1 [0:32];
+    (* romstyle = "logic" *)logic signed [31:0] lut_2 [0:32];
+
+    initial begin
+        $readmemh("/home/ctw-fpga/Desktop/project/ecg_disease/RTL/tb/fc2_weights.hex", fc2_weights);
+        $readmemh("/home/ctw-fpga/Desktop/project/ecg_disease/RTL/tb/fc2_lut_0.hex", lut_0);
+        $readmemh("/home/ctw-fpga/Desktop/project/ecg_disease/RTL/tb/fc2_lut_1.hex", lut_1);
+        $readmemh("/home/ctw-fpga/Desktop/project/ecg_disease/RTL/tb/fc2_lut_2.hex", lut_2);
+    end
+
+    // ==========================================
+    // MẠCH TỔ HỢP: NHÂN TRỌNG SỐ VÀ ĐẾM POPCOUNT
+    // ==========================================
+    logic [31:0] and_res_0, and_res_1, and_res_2;
+    logic [5:0]  pop_comb_0, pop_comb_1, pop_comb_2;
+
+    // Phép AND song song 32-bit
+    assign and_res_0 = fc1_data_in & fc2_weights[0];
+    assign and_res_1 = fc1_data_in & fc2_weights[1];
+    assign and_res_2 = fc1_data_in & fc2_weights[2];
+
+    // Gọi 3 khối Popcount 32-bit phần cứng
+    popcount #(32) pc_0 (.data_in(and_res_0), .count_out(pop_comb_0));
+    popcount #(32) pc_1 (.data_in(and_res_1), .count_out(pop_comb_1));
+    popcount #(32) pc_2 (.data_in(and_res_2), .count_out(pop_comb_2));
+
+    // ==========================================
+    // PIPELINE TẦNG 1: CHỐT KẾT QUẢ POPCOUNT
+    // ==========================================
+    logic [5:0] pop_0, pop_1, pop_2;
+    logic       valid_stg1;
+
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            pop_0      <= '0;
+            pop_1      <= '0;
+            pop_2      <= '0;
+            valid_stg1 <= 1'b0;
+        end else begin
+            valid_stg1 <= fc1_valid;
+            if (fc1_valid) begin
+                pop_0 <= pop_comb_0;
+                pop_1 <= pop_comb_1;
+                pop_2 <= pop_comb_2;
+            end
+        end
+    end
+
+    // ==========================================
+    // PIPELINE TẦNG 2: TRA CỨU ĐIỂM SỐ (LUT LOOKUP)
+    // ==========================================
+    logic signed [31:0] score_0, score_1, score_2;
+    logic               valid_stg2;
+
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            score_0    <= '0;
+            score_1    <= '0;
+            score_2    <= '0;
+            valid_stg2 <= 1'b0;
+        end else begin
+            valid_stg2 <= valid_stg1;
+            if (valid_stg1) begin
+                // Lấy giá trị popcount làm địa chỉ móc dữ liệu từ ROM
+                score_0 <= lut_0[pop_0];
+                score_1 <= lut_1[pop_1];
+                score_2 <= lut_2[pop_2];
+            end
+        end
+    end
+
+    // ==========================================
+    // PIPELINE TẦNG 3: ARGMAX (TÌM MAX CHỌN CLASS)
+    // ==========================================
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            class_out <= 2'b00;
+            fc2_valid <= 1'b0;
+        end else begin
+            fc2_valid <= valid_stg2;
+            if (valid_stg2) begin
+                // So sánh số có dấu 32-bit để tìm điểm cao nhất
+                if (score_0 >= score_1 && score_0 >= score_2)
+                    class_out <= 2'b00; // Bệnh nhân bị ARR
+                else if (score_1 >= score_0 && score_1 >= score_2)
+                    class_out <= 2'b01; // Bệnh nhân bị CHF
+                else
+                    class_out <= 2'b10; // Bệnh nhân bình thường (NSR)
+            end
+        end
+    end
+
+endmodule

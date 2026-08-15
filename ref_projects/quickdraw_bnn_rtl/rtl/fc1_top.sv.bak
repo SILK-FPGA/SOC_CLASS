@@ -1,0 +1,90 @@
+module fc1_top (
+    input  logic         clk,
+    input  logic         rst_n,
+    
+    // Giao diện ngõ vào
+    input  logic         pw_valid,
+    input  logic [17:0]  pw_data,    // PW trả ra 18-bit song song cho mỗi pixel
+    input  logic [3:0]   rr_data,    // 4 bit RR nhịp tim
+    
+    // Giao diện ngõ ra
+    output logic         fc1_valid,
+    output logic [31:0]  fc1_data_out
+);
+
+    // ==========================================
+    // 1. THANH GHI DỊCH (SHIFT REGISTER) VÀ BỘ ĐẾM
+    // ==========================================
+    logic [3041:0] shift_reg;
+    logic [7:0]    pixel_cnt;        // Chỉ cần đếm 169 nhịp (0 đến 168)
+    logic          trigger_fc1; 
+
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            shift_reg   <= '0;
+            pixel_cnt   <= '0;
+            trigger_fc1 <= 1'b0;
+        end else begin
+            trigger_fc1 <= 1'b0; // Mặc định hạ cờ
+            
+            if (pw_valid) begin
+                // SỬA LỖI: Dịch PHẢI. Nhét 18 bit mới vào MSB, đẩy dữ liệu cũ về LSB
+                shift_reg <= {pw_data, shift_reg[3041:18]};
+                
+                
+                // Kích thước Feature Map là 13x13 = 169 pixel
+                if (pixel_cnt == 8'd168) begin
+                    trigger_fc1 <= 1'b1;
+                    pixel_cnt   <= '0; // Reset chờ khung ảnh sau
+                end else begin
+                    pixel_cnt   <= pixel_cnt + 1'b1;
+                end
+            end
+        end
+    end
+
+    // ==========================================
+    // 2. GHÉP MẢNG (CONCATENATION)
+    // ==========================================
+    logic [3045:0] fc1_input_vector;
+    
+    // Khớp với torch.cat([x, rr], dim=1) trong Python.
+    // RR được nối vào vị trí MSB (từ bit 3042 đến 3045).
+    assign fc1_input_vector = {rr_data, shift_reg}; 
+
+    // ==========================================
+    // 3. ON-CHIP MEMORY CHO TRỌNG SỐ
+    // ==========================================
+    logic [3045:0] fc1_weights [0:31];
+    logic [16:0]   fc1_thresh  [0:31];
+
+    initial begin
+        $readmemh("/home/ctw-fpga/Desktop/project/ecg_disease/RTL/tb/fc1_weights.hex", fc1_weights);
+        $readmemh("/home/ctw-fpga/Desktop/project/ecg_disease/RTL/tb/fc1_thresh.hex", fc1_thresh);
+    end
+
+    // ==========================================
+    // 4. NHÂN BẢN 32 NƠ-RON BẰNG GENERATE
+    // ==========================================
+    logic [31:0] valid_out_arr; 
+
+    genvar i;
+    generate
+        for (i = 0; i < 32; i++) begin : gen_fc1_neurons
+            fc1_neuron u_neuron (
+                .clk       (clk),
+                .rst_n     (rst_n),
+                .valid_in  (trigger_fc1),
+                .data_in   (fc1_input_vector),
+                .weight_in (fc1_weights[i]),
+                .thresh_in (fc1_thresh[i]),
+                .valid_out (valid_out_arr[i]),          
+                .data_out  (fc1_data_out[i])            
+            );
+        end
+    endgenerate
+
+    // Cờ báo hiệu (chỉ cần lấy của nơ-ron số 0 làm đại diện vì 32 lõi chạy đồng bộ)
+    assign fc1_valid = valid_out_arr[0];
+
+endmodule

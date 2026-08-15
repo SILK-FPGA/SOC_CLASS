@@ -1,0 +1,78 @@
+module bdscnn_ecg (
+    input  logic       clk,
+    input  logic       rst_n,
+    input  logic       uart_rx,
+    input  logic       sw0,
+    output logic       ledr0,
+    output logic [6:0] hex0
+);
+// Thông số UART (Bro tự chỉnh theo đúng file module uart_rx của bro)
+    parameter BIT_RATE = 115200;
+    parameter CLK_HZ   = 50000000; // 50MHz
+    parameter PAYLOAD_BITS = 8;
+    parameter STOP_BITS    = 1;
+
+    // Tín hiệu kết nối module UART
+    logic       rx_valid;
+    logic [7:0] rx_data;
+    logic       rx_read; // Thường UART rx_read là tín hiệu báo đã đọc xong 1 byte
+    
+    // Tín hiệu nội bộ hệ thống
+    logic [1023:0] img_buffer;
+    logic [10:0]   byte_cnt;
+    logic          load_done;
+    logic [1:0]    class_result;
+    logic          sys_valid;
+
+    // 1. Tích hợp module UART của bro
+    uart_rx #(
+        .BIT_RATE(BIT_RATE),
+        .CLK_HZ(CLK_HZ),
+        .PAYLOAD_BITS(PAYLOAD_BITS),
+        .STOP_BITS(STOP_BITS)
+    ) uart_rx_inst (
+        .clk(clk),
+        .resetn(rst_n),
+        .uart_rxd(uart_rxd),
+        .uart_rx_read(1'b1),        // Luôn để 1 để auto đọc
+        .uart_rx_valid(rx_valid),
+        .uart_rx_data(rx_data)
+    );
+
+    // 2. FSM nhận dữ liệu 1024 byte ảnh
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            byte_cnt <= 0;
+            load_done <= 0;
+        end else if (rx_valid && !load_done) begin
+            img_buffer[byte_cnt[10:3]*8 +: 8] <= rx_data; 
+            byte_cnt <= byte_cnt + 1;
+            if (byte_cnt == 1023) load_done <= 1;
+        end
+    end
+
+    assign ledr0 = load_done;
+
+    // 3. Gọi bộ lõi AI (đã fix cứng trọng số)
+    // Tín hiệu img_valid được kích hoạt khi sw0 được gạt lên
+    bdscnn_top u_bdscnn (
+        .clk(clk), 
+        .rst_n(rst_n),
+        .img_valid(sw0 && load_done), 
+        .img_data(img_buffer[byte_cnt]), // Stream từng bit từ buffer
+        .rr_data(4'b0010), 
+        .sys_valid(sys_valid),
+        .class_out(class_result)
+    );
+
+    // 4. Giải mã HEX0
+    always_comb begin
+        case(class_result)
+            2'b00: hex0 = 7'b1000000; // 0
+            2'b01: hex0 = 7'b1111001; // 1
+            2'b10: hex0 = 7'b0100100; // 2
+            default: hex0 = 7'b1111111;
+        endcase
+    end
+
+endmodule

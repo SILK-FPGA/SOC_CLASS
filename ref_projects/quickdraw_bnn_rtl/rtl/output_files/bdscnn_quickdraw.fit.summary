@@ -1,0 +1,20 @@
+Fitter Status : Successful - Fri Aug  7 17:00:26 2026
+Quartus Prime Version : 20.1.1 Build 720 11/11/2020 SJ Lite Edition
+Revision Name : bdscnn_quickdraw
+Top-level Entity Name : DE10_NANO
+Family : Cyclone V
+Device : 5CSEBA6U23I7
+Timing Models : Final
+Logic utilization (in ALMs) : 8,163 / 41,910 ( 19 % )
+Total registers : 6531
+Total pins : 208 / 314 ( 66 % )
+Total virtual pins : 0
+Total block memory bits : 60 / 5,662,720 ( < 1 % )
+Total RAM Blocks : 1 / 553 ( < 1 % )
+Total DSP Blocks : 0 / 112 ( 0 % )
+Total HSSI RX PCSs : 0
+Total HSSI PMA RX Deserializers : 0
+Total HSSI TX PCSs : 0
+Total HSSI PMA TX Serializers : 0
+Total PLLs : 1 / 6 ( 17 % )
+Total DLLs : 1 / 4 ( 25 % )

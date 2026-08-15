@@ -1,0 +1,66 @@
+import hw_stimulus::*;
+module bdscnn_ecg_tb (
+    input  logic       clk,
+    input  logic       rst_n, // Nút nhấn Reset hệ thống (Tích cực thấp)
+    input  logic       start, // Nút nhấn User Button (Tích cực cao) để kích hoạt
+    output logic [2:0] ledr   // ledr[2]: Class 2, ledr[1]: Class 1, ledr[0]: Class 0
+);
+
+    // Import dữ liệu Test Vector đã đóng gói
+    
+
+    // Tín hiệu nội bộ
+    logic [10:0] stream_cnt;
+    logic        is_streaming;
+    logic [1:0]  class_result;
+    logic        sys_valid;
+
+    // 1. FSM Bơm dữ liệu từ Package vào AI
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            is_streaming <= 1'b0;
+            stream_cnt   <= '0;
+        end else begin
+            // Kích hoạt khi nhấn nút Start
+            if (start && !is_streaming) begin
+                is_streaming <= 1'b1;
+                stream_cnt   <= '0;
+            end else if (is_streaming) begin
+                if (stream_cnt < 1024) begin
+                    stream_cnt <= stream_cnt + 1'b1;
+                end else begin
+                    is_streaming <= 1'b0; // Bơm xong 1024 bit thì dừng
+                end
+            end
+        end
+    end
+
+    // 2. Lõi AI bDSCNN
+    bdscnn_top u_bdscnn (
+        .clk       (clk),
+        .rst_n     (rst_n),
+        .img_valid (is_streaming && (stream_cnt < 1024)), 
+        .img_data  (TEST_IMG[stream_cnt]), // Rút từng bit từ Package Hằng Số
+        .rr_data   (TEST_RR),              // Lấy RR từ Package Hằng Số
+        .sys_valid (sys_valid),
+        .class_out (class_result)
+    );
+
+    // 3. Giải mã kết quả ra 3 LED
+    logic [2:0] led_reg;
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            led_reg <= 3'b000; // Tắt hết LED khi Reset
+        end else if (sys_valid) begin
+            case (class_result)
+                2'b00: led_reg <= 3'b001; // Class 0 (ARR) -> Bật LEDR0
+                2'b01: led_reg <= 3'b010; // Class 1 (CHF) -> Bật LEDR1
+                2'b10: led_reg <= 3'b100; // Class 2 (NSR) -> Bật LEDR2
+                default: led_reg <= 3'b000;
+            endcase
+        end
+    end
+
+    assign ledr = led_reg;
+
+endmodule
