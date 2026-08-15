@@ -52,12 +52,31 @@ cốt lõi sau:
   - Ưu điểm: Cực kỳ tối ưu cho các dự án tăng tốc phần cứng (AI Accelerators, DSP, Video Processing), nơi testbench cần nạp hàng triệu pixel/trọng số từ file ảnh thực tế và cần tốc độ chạy nhanh để
     đo cycle accuracy (chu kỳ thực thi của mô hình AI).
 
-# Mô phỏng RAM ảo với SDRAM VIP 
+## Mô phỏng RAM ảo với SDRAM VIP 
 
-Trước khi tương tác với RAM thật, ta cần viết một trình mô phỏng RAM ảo bằng code cpp để tương tác với master IP của người dùng. Ta không cần phải mô phỏng RAM ở cấp độ vật lí, mà chỉ cần mô phỏng ở cấp 
-độ giao dịch dữ liệu qua Avalon MM Burst Interface là được. Cách mô phỏng này gọi là mô p
+- Trước khi tương tác với SDRAM thật, ta cần viết một trình mô phỏng RAM ảo bằng code cpp để tương tác với master IP của người dùng. Ta không cần phải mô phỏng SDRAM ở cấp độ vật lí, mà chỉ cần mô phỏng ở cấp độ giao dịch dữ liệu qua Avalon MM Burst Interface là được. 
 
-Đoạn code mô tả RAM ảo như sau, trước tiên tạo Sdram_VIP
-```
+- SDRAM ảo cần có những đặc điểm sau:
+  - Dữ liệu đẩy ra ở cạnh xuống của clock, để dữ liệu ổn định và Master lấy mẫu ở cạnh lên tiếp theo.
+  - Chỉ chấp nhận yêu cầu đọc từ Master khi không thực hiện giao dịch hay đang ở trong chu kì burst nào (burstcount = 0). Handshake xảy ra khi read = 1 và wait_request = 0.
+  - Sau khi handshake dữ liệu phải mất một khoảng chu kỳ bằng với độ trễ phản hồi đọc CAS latentcy (CAS Latency = 2 định nghĩa trong SdranVIP.h) làm cho việc đẩy dữ liệu ra chân readdata và cờ      báo datavalid bị trễ đi 2 chu kỳ.
+- Đoạn code **SdramVIP.h** vầ **SdramVIP.cpp** nằm trong thư mục dự án quickdraw_bnn_rtl/rtl/ip/hardware trong git này.
+
+## Mô phỏng HPS ảo với HPS VIP
+- Chỉ mô phỏng CPU ở cấp độ giao dịch, ghi tín hiệu trigger DMA, polling chờ kết quả từ AI trả về, in ra màn hình kết quả, đặc điểm như sau:
+  - Phát tín hiệu trigger:CPU điều khiển IP phần cứng thông qua việc ghi vào các thanh ghi địa chỉ hoặc kéo các chân PIO. HPS VIP phải mô phỏng chính xác hành vi này
+  - Polling: Hỏi vòng liên tục cờ báo của khối phần cứng (valid = 1) để đọc dữ liệu từ AI CSR và kết quả dự đoán trả về thông qua PIO_IN. Khả năng sleep và chờ cờ ngắt IRQ từ IP.
+  - Đảm bảo setup time và hold time khi tín hiệu đi từ miền logic của HPS sang miền logic của FPGA.
+  - Bật dump sóng để quay lại các trạng thái của hệ thống ra waveform.
+
+## Vai trò của file MAIN
+
+- sim_main.cpp là file để kết nối toàn bộ luồng của hệ thống, nó gọi ra và kết nối SdramVIP, HpsVIp và DUT lại với nhau. Kích hoạt các kích thích và gọi các hàm đã định nghĩa trước đó trong file .h để mô phỏng, tạo thư mục sim/waveform.fst để dump dạng sóng, sử dụng systemfile để truy cập file như ảnh test_img_0.txt và cuối cùng là file để thực thi chính của verilator. Mỗi dự
+án ta có thể sử dụng chung SdramVIP và HpsVIP nhưng phải tinh chỉnh lại sim_main để tùy theo các kịch bản kiểm thử.
+
+# VÍ DỤ VỚI QUICKDRAW BNN SOC
+
+
+ 
 
 
