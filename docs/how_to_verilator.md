@@ -184,7 +184,7 @@ int main(int argc, char** argv) {
     
     // 3. Gọi HPS VIP chờ kết quả
     // Tạo thời gian chờ tối đa 70k, Trừ đi Thời gian delay để ổn định RAM và phần cứng là 67k, vậy kể từ khi lệnh đọc xảy ra, ai_result_word phải hợp lệ trong khoảng thời gian 3k chu kì.
-    // Thực tế thì lõi AI tính toán xong trong 1035 chu kì, nếu con số này vượt quá 3k, hệ thống sẽ trả ra không phản hồi !
+    // Thực tế thì lõi AI tính toán xong trong 1052 chu kì clock, nếu con số này vượt quá 3k, hệ thống sẽ trả ra không phản hồi !
     HpsVIP::wait_and_profile(
         dut->ai_result_word_o, tick, 
         70000, 67000, 
@@ -198,6 +198,46 @@ int main(int argc, char** argv) {
 }
 ```
 
- 
+## Chạy và xem Kết quả mô phỏng 
 
+Chạy lần lượt các lệnh bên dưới tại thư mục chứa các file VIP và sim_main.cpp, khi tải github này, bạn hãy trỏ tới **quickdraw_bnn_rtl/rtl/ip/hardware** để chạy nhé, mình có để sẵn quick_key.txt để chạy các lệnh các bạn có thể mở lên để xem nhé:
+```
+//tro toi thu mcu lam viec
+cd ~/Desktop/project/quickdraw_bnn_rtl/rtl/ip/hardware
 
+// bien dich toan bo he thong
+
+verilator -Wall -Wno-EOFNEWLINE -Wno-fatal --trace-fst -y . \
+--cc fc1_constants.sv bnn_soc_wrapper.sv read_avalon_sdr.sv buffer_AI.sv bdscnn_top.sv ai_result_register.sv \
+--exe sim_main.cpp SdramVIP.cpp HpsVIP.cpp \
+--build --top-module bnn_soc_wrapper
+```
+Ngay khi biên dịch thành công, verilator sẽ tạo thư mục thực thi có tên **obj_dir** ngay tại thư mục làm việc, như hình dưới:
+
+<img width="1589" height="796" alt="image" src="https://github.com/user-attachments/assets/13429981-0ab3-44dc-9cc4-9c1725e67827" />
+
+Chạy thư file thực thi với lệnh:
+```
+//chay file thuc thi
+./obj_dir/Vbnn_soc_wrapper
+```
+Kết quả sau khi chạy mô phỏng với test_img_0.txt như hình dưới: 
+
+<img width="1425" height="777" alt="image" src="https://github.com/user-attachments/assets/dc411cf9-f648-4876-8239-8ad690b479a5" />
+
+## Xem sóng waveform của mô phỏng
+
+Sau khi chạy file thực thi xong, hệ thống tự động tạo file waveform.fst trong thư mục sim/, tải gtkwave về và mở file thực thi lên xem nhé !
+```
+cd sim/
+gtkwave waveform.fst
+```
+Màn hình hiện ra, ta chọn từng khối để xem bằng cách: click mũi tên sổ xuống --> chọn u_dma --> chuột phải --> Insert --> Yes
+
+<img width="2568" height="1926" alt="image" src="https://github.com/user-attachments/assets/513b4e9c-e30d-46df-944b-8043115f8501" />
+
+Sau đó zoom tín hiệu lại cho dễ xem:
+
+<img width="1292" height="763" alt="image" src="https://github.com/user-attachments/assets/0f5eeb5e-b182-4c58-a19f-f226607cae5e" />
+
+Chi tiết hơn về phân tích dạng sóng thì xem ở README.md của dự án quickdraw_bnn_rtl nhé !
