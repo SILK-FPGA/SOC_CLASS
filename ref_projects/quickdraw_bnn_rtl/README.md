@@ -1,3 +1,5 @@
+# NGUYÊN LÍ THIẾT KẾ BỘ TĂNG TỐC BNN VỚI CUSTOM DMA
+
 # CÁCH NẠP FILE CẤU HÌNH VÀ CHẠY TRÊN WEB REMOTE LAB
 # Nạp file rbf 
 Lên web remote lab, chọn board de10 nano 2, phần giao diện để tương tác như hình dưới:
