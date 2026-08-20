@@ -334,3 +334,22 @@ Kết quả sau khi nạp device tree overlay như hình dưới, cách nạp đ
 <img width="1414" height="809" alt="image" src="https://github.com/user-attachments/assets/cfa30094-c1cc-4b7e-b0c0-a956bf4bdfeb" />
 
 Thử ghi vào 2 số ngẫu nhiên, rồi đọc ra từ địa chỉ cầu H2F 0xC0000000, ta được kết quả tính toán từ phần cứng adder (custom IP) y hệt như kết quả trên phần mềm.
+
+## CHẠY TRÊN WEB REMOTE LAB
+
+Đầu tiên ta nạp file output_files/final_rbf/output_file.rbf tại thư mục dự án của github này: 
+
+<img width="1202" height="855" alt="image" src="https://github.com/user-attachments/assets/c9f0f25d-4a7c-41f3-be98-874ef3b243b4" />
+
+Nếu upload thành công, mở terminal lên kiểm tra, ấn enter liên tục, nếu không treo --> nạp thành công, hoặc có thể kiểm tra trạng thái của board, có led debug clock đang nháy
+
+<img width="1284" height="786" alt="image" src="https://github.com/user-attachments/assets/685cd881-3d4f-4415-9063-d51238859ae9" />
+
+Sau khi mở terminal, tại root ~/ chạy lệnh "run c"
+
+
+<img width="1284" height="818" alt="image" src="https://github.com/user-attachments/assets/762165bb-56f8-418b-ac50-0f494728a40f" />
+
+Copy code mẫu tại github này: /software/userspace/ddr3_adder.c , trước tiên phải 'ctrl + K' để xóa code mẫu cũ, 'ctrl + shift + V' để dán code mới vào
+
+
