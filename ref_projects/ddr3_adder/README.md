@@ -350,6 +350,14 @@ Sau khi mở terminal, tại root ~/ chạy lệnh "run c"
 
 <img width="1284" height="818" alt="image" src="https://github.com/user-attachments/assets/762165bb-56f8-418b-ac50-0f494728a40f" />
 
-Copy code mẫu tại github này: /software/userspace/ddr3_adder.c , trước tiên phải 'ctrl + K' để xóa code mẫu cũ, 'ctrl + shift + V' để dán code mới vào
+Copy code mẫu tại github này: /software/userspace/ddr3_adder.c , trước tiên phải 'ctrl + K' để xóa code mẫu cũ, 'ctrl + shift + V' để dán code mới vào. Lưu lại với 'Ctrt + x' --> ấn phím y --> Enter.
 
+<img width="1385" height="947" alt="image" src="https://github.com/user-attachments/assets/f3056b2a-41fc-4a85-94cc-f2cb7e1f5d72" />
+
+
+Sau khi chép vào board tự biên dịch và chạy code C, màn hình nhập tham số sẽ hiện ra, bởi vì ta ghi vào ngẫu nhiên mà không nhập từ bên ngoài, nên nhấn Enter để test phần cứng 
+
+<img width="1385" height="947" alt="image" src="https://github.com/user-attachments/assets/5cafabe3-e81b-4d1c-bd4d-3597944a2364" />
+
+Khi lỡ ấn thoát ra hoặc bị giải phóng board, code .rbf cũ vẫn còn, nên chỉ cần chạy lại bước "run c" là được, trừ trường hợp nếu bạn vô lại mà có người khác vào trước bạn, họ sẽ nạp code rbf mới nhất của họ, khi đó ta mới cần nạp lại !
 
