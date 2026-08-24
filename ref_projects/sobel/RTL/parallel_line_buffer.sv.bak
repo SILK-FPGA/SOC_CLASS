@@ -1,0 +1,107 @@
+module parallel_line_buffer #(
+    parameter IMG_WIDTH      = 640,
+    parameter PIXELS_PER_CLK = 32 // Tương ứng 256-bit / 8-bit
+)(
+    input  logic clk,
+    input  logic rst_n,
+    
+    input  logic valid_in,
+    input  logic [PIXELS_PER_CLK*8-1:0] din, // 256-bit từ DMA
+    
+    output logic valid_out,
+    // Xuất mảng phẳng chứa 32 cửa sổ 3x3 để nhét vào Sobel Array
+    output logic [PIXELS_PER_CLK*72-1:0] window_array_out 
+);
+
+    // Tính toán độ sâu của FIFO (Số block 256-bit trên 1 hàng)
+    localparam WORDS_PER_LINE = IMG_WIDTH / PIXELS_PER_CLK;
+    
+    // Khai báo tín hiệu cho 3 hàng (Row 0: Cũ nhất, Row 2: Mới nhất)
+    logic [PIXELS_PER_CLK*8-1:0] row2_current, row2_prev;
+    logic [PIXELS_PER_CLK*8-1:0] row1_current, row1_prev;
+    logic [PIXELS_PER_CLK*8-1:0] row0_current, row0_prev;
+    
+    // FIFOs infer bằng BRAM (Sử dụng IP Catalog hoặc xpm_fifo trong thực tế, 
+    // ở đây viết code infer cơ bản)
+    logic [PIXELS_PER_CLK*8-1:0] fifo_line1 [0:WORDS_PER_LINE-1];
+    logic [PIXELS_PER_CLK*8-1:0] fifo_line2 [0:WORDS_PER_LINE-1];
+    logic [$clog2(WORDS_PER_LINE)-1:0] wr_ptr, rd_ptr;
+    
+    logic [1:0] line_count; // Đếm số hàng đã đi qua để chốt valid_out
+    logic valid_q;
+
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            wr_ptr <= '0;
+            rd_ptr <= 1; // rd đi trước wr để tạo độ trễ WORDS_PER_LINE - 1
+            line_count <= '0;
+            valid_out <= 1'b0;
+            valid_q <= 1'b0;
+        end else if (valid_in) begin
+            // 1. Cập nhật Shift Registers cho các hàng
+            row2_prev <= row2_current;
+            row2_current <= din;
+            
+            row1_prev <= row1_current;
+            row1_current <= fifo_line1[rd_ptr];
+            
+            row0_prev <= row0_current;
+            row0_current <= fifo_line2[rd_ptr];
+            
+            // 2. Ghi vào FIFOs
+            fifo_line1[wr_ptr] <= row2_current;
+            fifo_line2[wr_ptr] <= row1_current;
+            
+            // 3. Quản lý con trỏ
+            if (wr_ptr == WORDS_PER_LINE - 1) begin
+                wr_ptr <= '0;
+                rd_ptr <= 1;
+                if (line_count < 2) line_count <= line_count + 1'b1;
+            end else begin
+                wr_ptr <= wr_ptr + 1'b1;
+                rd_ptr <= (rd_ptr == WORDS_PER_LINE - 1) ? '0 : rd_ptr + 1'b1;
+            end
+            
+            valid_q <= 1'b1;
+        end else begin
+            valid_q <= 1'b0;
+        end
+    end
+    
+    // Kích hoạt đầu ra khi đã đệm đủ ít nhất 2 hàng đầu tiên
+    assign valid_out = valid_q && (line_count == 2);
+
+    // 4. TRÍCH XUẤT CỬA SỔ SONG SONG (Logic tổ hợp)
+    // Nối mảng hiện tại với mảng trước đó để lấy các pixel biên (Halo pixels)
+    // Mảng 512-bit: [Hiện tại 255:0] ghép với [Trước đó 255:0]
+    wire [PIXELS_PER_CLK*16-1:0] concat_row2 = {row2_current, row2_prev};
+    wire [PIXELS_PER_CLK*16-1:0] concat_row1 = {row1_current, row1_prev};
+    wire [PIXELS_PER_CLK*16-1:0] concat_row0 = {row0_current, row0_prev};
+
+    genvar i;
+    generate
+        for (i = 0; i < PIXELS_PER_CLK; i++) begin : gen_windows
+            // Vị trí bit cơ sở của pixel thứ i trong block 256-bit "Hiện tại"
+            // Lưu ý: Do ghép mảng, mảng "Hiện tại" nằm ở nửa trên (từ bit 256 trở đi)
+            localparam BASE = PIXELS_PER_CLK*8 + (i * 8); 
+            
+            // Lấy 3 pixel liền kề cho mỗi hàng (Trái, Giữa, Phải)
+            // Pixel bên trái nằm lùi lại 8 bit (BASE - 8)
+            wire [7:0] p00 = concat_row0[BASE - 8 +: 8];
+            wire [7:0] p01 = concat_row0[BASE     +: 8];
+            wire [7:0] p02 = concat_row0[BASE + 8 +: 8];
+            
+            wire [7:0] p10 = concat_row1[BASE - 8 +: 8];
+            wire [7:0] p11 = concat_row1[BASE     +: 8];
+            wire [7:0] p12 = concat_row1[BASE + 8 +: 8];
+            
+            wire [7:0] p20 = concat_row2[BASE - 8 +: 8];
+            wire [7:0] p21 = concat_row2[BASE     +: 8];
+            wire [7:0] p22 = concat_row2[BASE + 8 +: 8];
+            
+            // Gói 9 pixel (72 bits) vào luồng đầu ra
+            assign window_array_out[i*72 +: 72] = {p22, p21, p20, p12, p11, p10, p02, p01, p00};
+        end
+    endgenerate
+
+endmodule

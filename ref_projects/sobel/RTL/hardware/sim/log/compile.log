@@ -1,0 +1,13 @@
+QuestaSim-64 vlog 2021.2_1 Compiler 2021.05 May 15 2021
+Start time: 15:55:17 on Aug 21,2026
+vlog -sv -f ../compile.f "+incdir+../rtl" 
+-- Compiling module sobel_pe
+-- Compiling module sobel_accelerator
+-- Compiling module sobel_soc_wrapper
+-- Compiling module parallel_line_buffer
+-- Compiling module tb_sobel_soc_wrapper
+
+Top level modules:
+	tb_sobel_soc_wrapper
+End time: 15:55:18 on Aug 21,2026, Elapsed time: 0:00:01
+Errors: 0, Warnings: 0

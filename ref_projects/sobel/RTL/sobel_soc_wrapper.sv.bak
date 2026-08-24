@@ -1,0 +1,125 @@
+module sobel_soc_wrapper #(
+    parameter PARALLEL_PIXELS = 32
+)(
+    input  logic         clk,
+    input  logic         reset,
+    
+    // ----------------------------------------------------
+    // 1. Giao tiếp với PIO IPs trong Platform Designer
+    // ----------------------------------------------------
+    input  logic         pio_start_i,  // Nối từ IP pio_out (HPS -> FPGA)
+    output logic         pio_done_o,   // Nối vào IP pio_in (FPGA -> HPS)
+
+    // ----------------------------------------------------
+    // 2. Avalon-MM Master (Read DMA)
+    // ----------------------------------------------------
+    output logic         avm_read_read,
+    output logic [31:0]  avm_read_address,
+    input  logic [255:0] avm_read_readdata,
+    input  logic         avm_read_readdatavalid,
+    output logic [31:0]  avm_read_byteenable,
+    input  logic         avm_read_waitrequest,
+    output logic [10:0]  avm_read_burstcount,
+
+    // ----------------------------------------------------
+    // 3. Avalon-MM Master (Write DMA)
+    // ----------------------------------------------------
+    output logic         avm_write_write,
+    output logic [31:0]  avm_write_address,
+    output logic [255:0] avm_write_writedata,
+    output logic [31:0]  avm_write_byteenable,
+    input  logic         avm_write_waitrequest,
+    output logic [10:0]  avm_write_burstcount
+);
+
+    // ====================================================
+    // MẠCH PHÁT HIỆN SƯỜN LÊN (RISING EDGE DETECTOR)
+    // ====================================================
+    logic pio_start_delay;
+    logic start_pulse;
+
+    always_ff @(posedge clk or posedge reset) begin
+        if (reset) begin
+            pio_start_delay <= 1'b0;
+        end else begin
+            pio_start_delay <= pio_start_i;
+        end
+    end
+    
+    // Chỉ tạo ra xung mức 1 trong đúng 1 nhịp clock khi pio_start_i chuyển từ 0 -> 1
+    assign start_pulse = pio_start_i & ~pio_start_delay;
+
+    // ====================================================
+    // DÂY TÍN HIỆU NỘI BỘ
+    // ====================================================
+    logic         lb_valid_in;
+    logic [255:0] lb_data_in;
+    logic         sobel_valid_in;
+    logic [PARALLEL_PIXELS*72-1:0] sobel_window_array;
+    logic         write_valid_in;
+    logic [PARALLEL_PIXELS*8-1:0] write_data_in;
+
+    // ====================================================
+    // GỌI CÁC MODULE CON
+    // ====================================================
+
+    read_avalon_sdr u_read_dma (
+        .clk(clk),
+        .reset(reset),
+        .read_start_i(start_pulse), // Cấp xung start vào đây
+        .avm_m0_read(avm_read_read),
+        .avm_m0_write(), 
+        .avm_m0_writedata(),
+        .avm_m0_address(avm_read_address),
+        .avm_m0_readdata(avm_read_readdata),
+        .avm_m0_readdatavalid(avm_read_readdatavalid),
+        .avm_m0_byteenable(avm_read_byteenable),
+        .avm_m0_waitrequest(avm_read_waitrequest),
+        .avm_m0_burstcount(avm_read_burstcount),
+        .read_reset_o(), 
+        .read_data_o(lb_data_in),
+        .read_enable_o(lb_valid_in),
+        .read_done_o() // Bỏ trống, dùng frame_done của write DMA cho chuẩn
+    );
+
+    parallel_line_buffer #(
+        .IMG_WIDTH(640),
+        .PIXELS_PER_CLK(PARALLEL_PIXELS)
+    ) u_line_buffer (
+        .clk(clk),
+        .rst_n(~reset),
+        .valid_in(lb_valid_in),
+        .din(lb_data_in),
+        .valid_out(sobel_valid_in),
+        .window_array_out(sobel_window_array)
+    );
+
+    sobel_accelerator_array #(
+        .PARALLEL_PIXELS(PARALLEL_PIXELS)
+    ) u_sobel_array (
+        .clk(clk),
+        .rst_n(~reset),
+        .valid_in(sobel_valid_in),
+        .window_3x3_array_in(sobel_window_array),
+        .valid_out(write_valid_in),
+        .pixels_out(write_data_in)
+    );
+
+    write_avalon_sdr #(
+        .OUTPUT_BASE_ADDR(32'h3100_0000), 
+        .IMAGE_SIZE_BYTES(307200)         
+    ) u_write_dma (
+        .clk(clk),
+        .rst_n(~reset),
+        .valid_in(write_valid_in),
+        .data_in(write_data_in),
+        .avm_address(avm_write_address),
+        .avm_write(avm_write_write),
+        .avm_writedata(avm_write_writedata),
+        .avm_byteenable(avm_write_byteenable),
+        .avm_burstcount(avm_write_burstcount),
+        .avm_waitrequest(avm_write_waitrequest),
+        .frame_done(pio_done_o) // Kéo thẳng cờ done ra chân pio_in
+    );
+
+endmodule
