@@ -1,0 +1,69 @@
+m255
+K4
+z2
+!s99 nomlopt
+!s11f vlog 2021.2_1 2021.05, May 15 2021
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 d/home/huyatieo/Desktop/project/bnn_soc/soc_system/testbench/mentor
+T_opt
+!s110 1784735834
+V5hKkEV=RJ^;zRkPTVDHmc2
+04 13 4 work soc_system_tb fast 0
+=1-000ae431a4f1-6a60e858-53335-5d94f
+!s124 OEM100
+o-quiet -auto_acc_if_foreign -work work -L work -L work_lib -L altera_common_sv_packages -L error_adapter_0 -L border -L rsp_mux -L rsp_demux -L cmd_mux -L cmd_demux -L router_001 -L router -L hps_0_f2h_sdram0_data_agent -L avalon_st_adapter_002 -L avalon_st_adapter -L mm_bridge_0_m0_limiter -L router_003 -L mm_bridge_0_m0_agent -L mm_bridge_0_m0_translator -L mm_bridge_0_s0_rsp_width_adapter -L mm_bridge_0_s0_burst_adapter -L router_002 -L mm_bridge_0_s0_agent_rsp_fifo -L mm_bridge_0_s0_agent -L hps_0_h2f_lw_axi_master_agent -L mm_bridge_0_s0_translator -L read_mstr_internal -L dispatcher_internal -L hps_io -L fpga_interfaces -L rst_controller -L irq_mapper_001 -L irq_mapper -L mm_interconnect_2 -L mm_interconnect_1 -L mm_interconnect_0 -L msgdma_0 -L mm_bridge_0 -L hps_0 -L bnn_avl_wrapper_0 -L soc_system_inst_reset_bfm -L soc_system_inst_memory_bfm -L soc_system_inst_clk_bfm -L soc_system_inst -L altera_ver -L lpm_ver -L sgate_ver -L altera_mf_ver -L altera_lnsim_ver -L cyclonev_ver -L cyclonev_hssi_ver -L cyclonev_pcie_hip_ver
+Z1 tCvgOpt 0
+n@_opt
+OL;O;2021.2_1;73
+R0
+vsoc_system_tb
+!s110 1784736502
+!i10b 1
+!s100 7Vgzd2<Tia6S3E>DW_QI83
+I6i4L_FkDznbjCiBcSGTo50
+R0
+w1784735682
+8./../soc_system_tb/simulation/soc_system_tb.v
+F./../soc_system_tb/simulation/soc_system_tb.v
+!i122 9
+L0 6 79
+Z2 VDg1SIo80bB@j0V0VzS_@n1
+Z3 OL;L;2021.2_1;73
+r1
+!s85 0
+31
+!s108 1784736502.000000
+!s107 ./../soc_system_tb/simulation/soc_system_tb.v|
+!s90 -reportprogress|300|./../soc_system_tb/simulation/soc_system_tb.v|
+!i113 0
+o-L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+R1
+vtb_soc_master
+DXx6 sv_std 3 std 0 22 9oUSJO;AeEaW`l:M@^WG92
+!s110 1784736513
+!i10b 1
+!s100 7gkLkYV<iB>o?9D?j>>mT1
+Ifl8KBzPaRC>GU3_j>eW390
+S1
+R0
+w1784736379
+8tb_soc_master.sv
+Ftb_soc_master.sv
+!i122 10
+L0 3 122
+R2
+R3
+r1
+!s85 0
+31
+!s108 1784736513.000000
+!s107 tb_soc_master.sv|
+!s90 -reportprogress|300|-sv|tb_soc_master.sv|
+!i113 0
+o-sv -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+R1

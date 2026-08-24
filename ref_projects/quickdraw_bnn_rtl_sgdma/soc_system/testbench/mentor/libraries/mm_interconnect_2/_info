@@ -1,0 +1,33 @@
+m255
+K4
+z2
+!s11f vlog 2021.2_1 2021.05, May 15 2021
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 d/home/huyatieo/Desktop/project/bnn_soc/soc_system/testbench/mentor
+vsoc_system_mm_interconnect_2
+!s110 1784736497
+!i10b 1
+!s100 8FToEETN<49SnclF2J>9V0
+IRODl3An[L3a3_>j_nOa6H3
+R0
+w1784735690
+8./../soc_system_tb/simulation/submodules/soc_system_mm_interconnect_2.v
+F./../soc_system_tb/simulation/submodules/soc_system_mm_interconnect_2.v
+!i122 8
+L0 9 909
+VDg1SIo80bB@j0V0VzS_@n1
+OL;L;2021.2_1;73
+r1
+!s85 0
+31
+!s108 1784736497.000000
+!s107 ./../soc_system_tb/simulation/submodules/soc_system_mm_interconnect_2.v|
+!s90 -reportprogress|300|./../soc_system_tb/simulation/submodules/soc_system_mm_interconnect_2.v|-work|mm_interconnect_2|
+!i113 0
+o-work mm_interconnect_2 -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+tCvgOpt 0

@@ -1,0 +1,55 @@
+m255
+K4
+z2
+!s11f vlog 2021.2_1 2021.05, May 15 2021
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 d/home/huyatieo/Desktop/project/bnn_soc/soc_system/testbench/mentor
+valtera_reset_controller
+!s110 1784736496
+!i10b 1
+!s100 AbYPDDXoUZYQzY_kQ2LCk2
+INL^=MoiX@V1jg`aHUIV`N0
+R0
+Z1 w1784735690
+8./../soc_system_tb/simulation/submodules/altera_reset_controller.v
+F./../soc_system_tb/simulation/submodules/altera_reset_controller.v
+!i122 16
+L0 42 278
+Z2 VDg1SIo80bB@j0V0VzS_@n1
+Z3 OL;L;2021.2_1;73
+r1
+!s85 0
+31
+Z4 !s108 1784736496.000000
+!s107 ./../soc_system_tb/simulation/submodules/altera_reset_controller.v|
+!s90 -reportprogress|300|./../soc_system_tb/simulation/submodules/altera_reset_controller.v|-work|rst_controller|
+!i113 0
+Z5 o-work rst_controller -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+Z6 tCvgOpt 0
+valtera_reset_synchronizer
+!s110 1784736497
+!i10b 1
+!s100 BQ8==cV75_ke3L4GKGWGO3
+IK?zFm]I:>lXCP9fjcz:HP2
+R0
+R1
+8./../soc_system_tb/simulation/submodules/altera_reset_synchronizer.v
+F./../soc_system_tb/simulation/submodules/altera_reset_synchronizer.v
+!i122 17
+L0 24 63
+R2
+R3
+r1
+!s85 0
+31
+R4
+!s107 ./../soc_system_tb/simulation/submodules/altera_reset_synchronizer.v|
+!s90 -reportprogress|300|./../soc_system_tb/simulation/submodules/altera_reset_synchronizer.v|-work|rst_controller|
+!i113 0
+R5
+R6

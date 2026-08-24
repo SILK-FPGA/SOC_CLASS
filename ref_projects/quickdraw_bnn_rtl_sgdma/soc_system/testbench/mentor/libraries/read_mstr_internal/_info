@@ -1,0 +1,78 @@
+m255
+K4
+z2
+!s11f vlog 2021.2_1 2021.05, May 15 2021
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 d/home/huyatieo/Desktop/project/bnn_soc/soc_system/testbench/mentor
+vMM_to_ST_Adapter
+Z1 !s110 1784736475
+!i10b 1
+!s100 On15AlG:85Il_K8YD_JOD3
+I@fRzXgPbfiKESa_ebTOE[1
+R0
+Z2 w1784735722
+8./../soc_system_tb/simulation/submodules/MM_to_ST_Adapter.v
+F./../soc_system_tb/simulation/submodules/MM_to_ST_Adapter.v
+!i122 25
+L0 53 313
+Z3 VDg1SIo80bB@j0V0VzS_@n1
+Z4 OL;L;2021.2_1;73
+r1
+!s85 0
+31
+Z5 !s108 1784736475.000000
+!s107 ./../soc_system_tb/simulation/submodules/MM_to_ST_Adapter.v|
+!s90 -reportprogress|300|./../soc_system_tb/simulation/submodules/MM_to_ST_Adapter.v|-work|read_mstr_internal|
+!i113 0
+Z6 o-work read_mstr_internal -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+Z7 tCvgOpt 0
+n@m@m_to_@s@t_@adapter
+vread_burst_control
+R1
+!i10b 1
+!s100 j^IVki6P>[V7I[:ze;NC01
+IJdH1^BE;80BB<NS7gH`CW2
+R0
+R2
+8./../soc_system_tb/simulation/submodules/read_burst_control.v
+F./../soc_system_tb/simulation/submodules/read_burst_control.v
+!i122 26
+L0 42 66
+R3
+R4
+r1
+!s85 0
+31
+R5
+!s107 ./../soc_system_tb/simulation/submodules/read_burst_control.v|
+!s90 -reportprogress|300|./../soc_system_tb/simulation/submodules/read_burst_control.v|-work|read_mstr_internal|
+!i113 0
+R6
+R7
+vread_master
+!s110 1784736474
+!i10b 1
+!s100 koSRU0]zU_gcWlW]de?4l2
+IT=0`j[Z<BK]b^hVgoIVNd0
+R0
+R2
+8./../soc_system_tb/simulation/submodules/read_master.v
+F./../soc_system_tb/simulation/submodules/read_master.v
+!i122 24
+L0 73 723
+R3
+R4
+r1
+!s85 0
+31
+!s108 1784736474.000000
+!s107 ./../soc_system_tb/simulation/submodules/read_master.v|
+!s90 -reportprogress|300|./../soc_system_tb/simulation/submodules/read_master.v|-work|read_mstr_internal|
+!i113 0
+R6
+R7

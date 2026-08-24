@@ -1,0 +1,165 @@
+m255
+K4
+z2
+!s11f vlog 2021.2_1 2021.05, May 15 2021
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 d/home/huyatieo/Desktop/project/bnn_soc/soc_system/testbench/mentor
+vcsr_block
+Z1 !s110 1784736475
+!i10b 1
+!s100 V`hH1B_<N4bcd>iC0_VbV1
+IDEmm=;^8GelM1:>>Rd95O3
+R0
+Z2 w1784735722
+8./../soc_system_tb/simulation/submodules/csr_block.v
+F./../soc_system_tb/simulation/submodules/csr_block.v
+!i122 58
+L0 99 316
+Z3 VDg1SIo80bB@j0V0VzS_@n1
+Z4 OL;L;2021.2_1;73
+r1
+!s85 0
+31
+Z5 !s108 1784736475.000000
+!s107 ./../soc_system_tb/simulation/submodules/csr_block.v|
+!s90 -reportprogress|300|./../soc_system_tb/simulation/submodules/csr_block.v|-work|dispatcher_internal|
+!i113 0
+Z6 o-work dispatcher_internal -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+Z7 tCvgOpt 0
+vdescriptor_buffers
+R1
+!i10b 1
+!s100 H4hWgE9?z_Y9md[R54d4?2
+IgUn3AG=QTb<J=]13RkcOB3
+R0
+R2
+8./../soc_system_tb/simulation/submodules/descriptor_buffers.v
+F./../soc_system_tb/simulation/submodules/descriptor_buffers.v
+!i122 57
+L0 54 368
+R3
+R4
+r1
+!s85 0
+31
+R5
+!s107 ./../soc_system_tb/simulation/submodules/descriptor_buffers.v|
+!s90 -reportprogress|300|./../soc_system_tb/simulation/submodules/descriptor_buffers.v|-work|dispatcher_internal|
+!i113 0
+R6
+R7
+vdispatcher
+R1
+!i10b 1
+!s100 8F6e4K=Dj8`aheM6E[`_A3
+I?TQ0OACLn<SlX@QNCiiak1
+R0
+R2
+8./../soc_system_tb/simulation/submodules/dispatcher.v
+F./../soc_system_tb/simulation/submodules/dispatcher.v
+!i122 56
+L0 76 355
+R3
+R4
+r1
+!s85 0
+31
+R5
+!s107 ./../soc_system_tb/simulation/submodules/dispatcher.v|
+!s90 -reportprogress|300|./../soc_system_tb/simulation/submodules/dispatcher.v|-work|dispatcher_internal|
+!i113 0
+R6
+R7
+vfifo_with_byteenables
+Z8 !s110 1784736476
+!i10b 1
+!s100 UhC4H]@UmWQM5BBF;kiCN1
+IC0NaQAM5D>9hm3?Rh?@K30
+R0
+R2
+8./../soc_system_tb/simulation/submodules/fifo_with_byteenables.v
+F./../soc_system_tb/simulation/submodules/fifo_with_byteenables.v
+!i122 60
+L0 45 141
+R3
+R4
+r1
+!s85 0
+31
+R5
+!s107 ./../soc_system_tb/simulation/submodules/fifo_with_byteenables.v|
+!s90 -reportprogress|300|./../soc_system_tb/simulation/submodules/fifo_with_byteenables.v|-work|dispatcher_internal|
+!i113 0
+R6
+R7
+vread_signal_breakout
+R8
+!i10b 1
+!s100 Q_X?Mn0PXEa<XkC]:Z02>2
+I^8Omh5KFl>kzN:UA=2Ug^2
+R0
+R2
+8./../soc_system_tb/simulation/submodules/read_signal_breakout.v
+F./../soc_system_tb/simulation/submodules/read_signal_breakout.v
+!i122 61
+L0 42 96
+R3
+R4
+r1
+!s85 0
+31
+Z9 !s108 1784736476.000000
+!s107 ./../soc_system_tb/simulation/submodules/read_signal_breakout.v|
+!s90 -reportprogress|300|./../soc_system_tb/simulation/submodules/read_signal_breakout.v|-work|dispatcher_internal|
+!i113 0
+R6
+R7
+vresponse_block
+R1
+!i10b 1
+!s100 3bn6XzSUCMc@Nh2D<9Y]m3
+Im3@6Y4C:iIL<S:O[`n3o72
+R0
+R2
+8./../soc_system_tb/simulation/submodules/response_block.v
+F./../soc_system_tb/simulation/submodules/response_block.v
+!i122 59
+L0 61 165
+R3
+R4
+r1
+!s85 0
+31
+R5
+!s107 ./../soc_system_tb/simulation/submodules/response_block.v|
+!s90 -reportprogress|300|./../soc_system_tb/simulation/submodules/response_block.v|-work|dispatcher_internal|
+!i113 0
+R6
+R7
+vwrite_signal_breakout
+R8
+!i10b 1
+!s100 [VGBj=ONXCV4o0OWf^U9I3
+I?NSRo<MD>gLAYn7>1fgaM2
+R0
+R2
+8./../soc_system_tb/simulation/submodules/write_signal_breakout.v
+F./../soc_system_tb/simulation/submodules/write_signal_breakout.v
+!i122 62
+L0 41 85
+R3
+R4
+r1
+!s85 0
+31
+R9
+!s107 ./../soc_system_tb/simulation/submodules/write_signal_breakout.v|
+!s90 -reportprogress|300|./../soc_system_tb/simulation/submodules/write_signal_breakout.v|-work|dispatcher_internal|
+!i113 0
+R6
+R7

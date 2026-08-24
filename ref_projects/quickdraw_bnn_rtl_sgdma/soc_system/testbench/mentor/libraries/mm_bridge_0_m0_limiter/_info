@@ -1,0 +1,131 @@
+m255
+K4
+z2
+!s11f vlog 2021.2_1 2021.05, May 15 2021
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 d/home/huyatieo/Desktop/project/bnn_soc/soc_system/testbench/mentor
+valtera_avalon_sc_fifo
+Z1 DXx6 sv_std 3 std 0 22 9oUSJO;AeEaW`l:M@^WG92
+Z2 !s110 1784736468
+!i10b 1
+!s100 8z[@:MhE[hD6ZMlJeEBi71
+I3YR_FhDNQ:VBFko_8?jl@0
+S1
+R0
+Z3 w1784735722
+8./../soc_system_tb/simulation/submodules/altera_avalon_sc_fifo.v
+F./../soc_system_tb/simulation/submodules/altera_avalon_sc_fifo.v
+!i122 34
+L0 21 895
+Z4 VDg1SIo80bB@j0V0VzS_@n1
+Z5 OL;L;2021.2_1;73
+r1
+!s85 0
+31
+Z6 !s108 1784736468.000000
+!s107 ./../soc_system_tb/simulation/submodules/altera_avalon_sc_fifo.v|
+!s90 -reportprogress|300|-sv|./../soc_system_tb/simulation/submodules/altera_avalon_sc_fifo.v|-L|altera_common_sv_packages|-work|mm_bridge_0_m0_limiter|
+!i113 0
+Z7 o-sv -L altera_common_sv_packages -work mm_bridge_0_m0_limiter -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+Z8 tCvgOpt 0
+valtera_avalon_st_pipeline_base
+R1
+R2
+!i10b 1
+!s100 cGCeQ81QUBhXX?C>8;47E2
+IjIJQc0C5eK]CzTz]b3bj50
+S1
+R0
+R3
+8./../soc_system_tb/simulation/submodules/altera_avalon_st_pipeline_base.v
+F./../soc_system_tb/simulation/submodules/altera_avalon_st_pipeline_base.v
+!i122 35
+L0 22 118
+R4
+R5
+r1
+!s85 0
+31
+R6
+!s107 ./../soc_system_tb/simulation/submodules/altera_avalon_st_pipeline_base.v|
+!s90 -reportprogress|300|-sv|./../soc_system_tb/simulation/submodules/altera_avalon_st_pipeline_base.v|-L|altera_common_sv_packages|-work|mm_bridge_0_m0_limiter|
+!i113 0
+R7
+R8
+valtera_merlin_reorder_memory
+R1
+R2
+!i10b 1
+!s100 UIBmFXK^2SdQzH?MP7g7l2
+ICL0336HehCDKOi101;HVz3
+S1
+R0
+R3
+Z9 8./../soc_system_tb/simulation/submodules/altera_merlin_reorder_memory.sv
+Z10 F./../soc_system_tb/simulation/submodules/altera_merlin_reorder_memory.sv
+!i122 33
+L0 28 155
+R4
+R5
+r1
+!s85 0
+31
+R6
+Z11 !s107 ./../soc_system_tb/simulation/submodules/altera_merlin_reorder_memory.sv|
+Z12 !s90 -reportprogress|300|-sv|./../soc_system_tb/simulation/submodules/altera_merlin_reorder_memory.sv|-L|altera_common_sv_packages|-work|mm_bridge_0_m0_limiter|
+!i113 0
+R7
+R8
+valtera_merlin_traffic_limiter
+R1
+R2
+!i10b 1
+!s100 [`1KDRh>OK9jM;NBL4H4Q1
+I5j0VEO_;=4m``;k9eQ8<@0
+S1
+R0
+R3
+8./../soc_system_tb/simulation/submodules/altera_merlin_traffic_limiter.sv
+F./../soc_system_tb/simulation/submodules/altera_merlin_traffic_limiter.sv
+!i122 32
+L0 49 737
+R4
+R5
+r1
+!s85 0
+31
+!s108 1784736467.000000
+!s107 ./../soc_system_tb/simulation/submodules/altera_merlin_traffic_limiter.sv|
+!s90 -reportprogress|300|-sv|./../soc_system_tb/simulation/submodules/altera_merlin_traffic_limiter.sv|-L|altera_common_sv_packages|-work|mm_bridge_0_m0_limiter|
+!i113 0
+R7
+R8
+vmemory_pointer_controller
+R1
+R2
+!i10b 1
+!s100 VL6:PNE@M@fzE1z:XLmzc2
+I8CSK;L@=ac<zSinidS@oX0
+S1
+R0
+R3
+R9
+R10
+!i122 33
+L0 185 112
+R4
+R5
+r1
+!s85 0
+31
+R6
+R11
+R12
+!i113 0
+R7
+R8

@@ -1,0 +1,107 @@
+m255
+K4
+z2
+!s11f vlog 2021.2_1 2021.05, May 15 2021
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 d/home/huyatieo/Desktop/project/bnn_soc/soc_system/testbench/mentor
+vsoc_system_mm_interconnect_1_router_001
+Z1 DXx6 sv_std 3 std 0 22 9oUSJO;AeEaW`l:M@^WG92
+Z2 !s110 1784736469
+!i10b 1
+!s100 JXfBok@aBO_WKleGbi9<g2
+IPBBEfC3VmzDiV=[<7e6a;1
+S1
+R0
+Z3 w1784735722
+Z4 8./../soc_system_tb/simulation/submodules/soc_system_mm_interconnect_1_router_001.sv
+Z5 F./../soc_system_tb/simulation/submodules/soc_system_mm_interconnect_1_router_001.sv
+!i122 17
+L0 84 130
+Z6 VDg1SIo80bB@j0V0VzS_@n1
+Z7 OL;L;2021.2_1;73
+r1
+!s85 0
+31
+Z8 !s108 1784736468.000000
+!s107 ./../soc_system_tb/simulation/submodules/soc_system_mm_interconnect_1_router_001.sv|
+Z9 !s90 -reportprogress|300|-sv|./../soc_system_tb/simulation/submodules/soc_system_mm_interconnect_1_router_001.sv|-L|altera_common_sv_packages|-work|router_001|
+!i113 0
+Z10 o-sv -L altera_common_sv_packages -work router_001 -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+Z11 tCvgOpt 0
+vsoc_system_mm_interconnect_1_router_001_default_decode
+R1
+R2
+!i10b 1
+!s100 >WCCEHlchOh<EjVhQ[=3n2
+IQ1QJ7^0Xi7I@fLG?Va8100
+S1
+R0
+R3
+R4
+R5
+!i122 17
+Z12 L0 45 37
+R6
+R7
+r1
+!s85 0
+31
+R8
+Z13 !s107 ./../soc_system_tb/simulation/submodules/soc_system_mm_interconnect_1_router_001.sv|
+R9
+!i113 0
+R10
+R11
+vsoc_system_mm_interconnect_2_router_001
+R1
+Z14 !s110 1784736465
+!i10b 1
+!s100 KNkeTTMS]N3@Xi21Z81Ab2
+IMmkb^nQ1MNS9jI_aLXlJ>2
+S1
+R0
+R3
+Z15 8./../soc_system_tb/simulation/submodules/soc_system_mm_interconnect_2_router_001.sv
+Z16 F./../soc_system_tb/simulation/submodules/soc_system_mm_interconnect_2_router_001.sv
+!i122 16
+L0 84 135
+R6
+R7
+r1
+!s85 0
+31
+Z17 !s108 1784736465.000000
+Z18 !s107 ./../soc_system_tb/simulation/submodules/soc_system_mm_interconnect_2_router_001.sv|
+Z19 !s90 -reportprogress|300|-sv|./../soc_system_tb/simulation/submodules/soc_system_mm_interconnect_2_router_001.sv|-L|altera_common_sv_packages|-work|router_001|
+!i113 0
+R10
+R11
+vsoc_system_mm_interconnect_2_router_001_default_decode
+R1
+R14
+!i10b 1
+!s100 =[4c?0R_If39ID]n?X95Z0
+Ig6`DM[f[zk7:BaMoYf8kV0
+S1
+R0
+R3
+R15
+R16
+!i122 16
+R12
+R6
+R7
+r1
+!s85 0
+31
+R17
+R18
+R19
+!i113 0
+R10
+R11

@@ -1,0 +1,55 @@
+m255
+K4
+z2
+!s11f vlog 2021.2_1 2021.05, May 15 2021
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 d/home/huyatieo/Desktop/project/bnn_soc/soc_system/testbench/mentor
+vsoc_system_mm_interconnect_0_avalon_st_adapter
+!s110 1784736469
+!i10b 1
+!s100 `EKSFAU7HAcQbI16`=1ZA1
+IVj3ni6e^k81`ZRfFMMN4U3
+R0
+Z1 w1784735722
+8./../soc_system_tb/simulation/submodules/soc_system_mm_interconnect_0_avalon_st_adapter.v
+F./../soc_system_tb/simulation/submodules/soc_system_mm_interconnect_0_avalon_st_adapter.v
+!i122 17
+Z2 L0 9 194
+Z3 VDg1SIo80bB@j0V0VzS_@n1
+Z4 OL;L;2021.2_1;73
+r1
+!s85 0
+31
+!s108 1784736469.000000
+!s107 ./../soc_system_tb/simulation/submodules/soc_system_mm_interconnect_0_avalon_st_adapter.v|
+!s90 -reportprogress|300|./../soc_system_tb/simulation/submodules/soc_system_mm_interconnect_0_avalon_st_adapter.v|-work|avalon_st_adapter|
+!i113 0
+Z5 o-work avalon_st_adapter -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+Z6 tCvgOpt 0
+vsoc_system_mm_interconnect_1_avalon_st_adapter
+!s110 1784736466
+!i10b 1
+!s100 >oDZlEW1zT@]X8S>B^37Q2
+IS[EHAMHJhh2R2?:[b>Cg[2
+R0
+R1
+8./../soc_system_tb/simulation/submodules/soc_system_mm_interconnect_1_avalon_st_adapter.v
+F./../soc_system_tb/simulation/submodules/soc_system_mm_interconnect_1_avalon_st_adapter.v
+!i122 16
+R2
+R3
+R4
+r1
+!s85 0
+31
+!s108 1784736466.000000
+!s107 ./../soc_system_tb/simulation/submodules/soc_system_mm_interconnect_1_avalon_st_adapter.v|
+!s90 -reportprogress|300|./../soc_system_tb/simulation/submodules/soc_system_mm_interconnect_1_avalon_st_adapter.v|-work|avalon_st_adapter|
+!i113 0
+R5
+R6

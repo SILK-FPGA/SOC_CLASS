@@ -1,0 +1,33 @@
+m255
+K4
+z2
+!s11f vlog 2021.2_1 2021.05, May 15 2021
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 d/home/huyatieo/Desktop/project/bnn_soc/soc_system/testbench/mentor
+valtera_avalon_sc_fifo
+!s110 1784736474
+!i10b 1
+!s100 o<4[h9[aF_<eG3j;6n1=<2
+Ica?=0S<kO9nz@[S6bm>dm0
+R0
+w1784735722
+8./../soc_system_tb/simulation/submodules/altera_avalon_sc_fifo.v
+F./../soc_system_tb/simulation/submodules/altera_avalon_sc_fifo.v
+!i122 8
+L0 21 895
+VDg1SIo80bB@j0V0VzS_@n1
+OL;L;2021.2_1;73
+r1
+!s85 0
+31
+!s108 1784736473.000000
+!s107 ./../soc_system_tb/simulation/submodules/altera_avalon_sc_fifo.v|
+!s90 -reportprogress|300|./../soc_system_tb/simulation/submodules/altera_avalon_sc_fifo.v|-work|mm_bridge_0_s0_agent_rsp_fifo|
+!i113 0
+o-work mm_bridge_0_s0_agent_rsp_fifo -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+tCvgOpt 0

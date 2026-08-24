@@ -1,0 +1,502 @@
+m255
+K4
+z2
+!s11f vlog 2021.2_1 2021.05, May 15 2021
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 d/home/huyatieo/Desktop/project/bnn_soc/soc_system/testbench/mentor
+vbdscnn_top
+Z1 DXx6 sv_std 3 std 0 22 9oUSJO;AeEaW`l:M@^WG92
+Z2 DXx4 work 13 fc1_constants 0 22 A:a7D>^Y?j?bE54PbG5zf3
+DXx4 work 18 bdscnn_top_sv_unit 0 22 JD=K@@H8=O4d8QCKeE0=o1
+Z3 !s110 1784736499
+Z4 VDg1SIo80bB@j0V0VzS_@n1
+r1
+!s85 0
+!i10b 1
+!s100 8jc5?@Vn]HhcT6C>Dz`4>1
+I5hK@QRN=VbS<jmTTV>1Cc3
+!s105 bdscnn_top_sv_unit
+S1
+R0
+Z5 w1784735687
+Z6 8./../soc_system_tb/simulation/submodules/bdscnn_top.sv
+Z7 F./../soc_system_tb/simulation/submodules/bdscnn_top.sv
+!i122 109
+L0 2 77
+Z8 OL;L;2021.2_1;73
+31
+Z9 !s108 1784736498.000000
+Z10 !s107 ./../soc_system_tb/simulation/submodules/bdscnn_top.sv|
+Z11 !s90 -reportprogress|300|-sv|./../soc_system_tb/simulation/submodules/bdscnn_top.sv|-L|altera_common_sv_packages|-work|bnn_avl_wrapper_0|
+!i113 0
+Z12 o-sv -L altera_common_sv_packages -work bnn_avl_wrapper_0 -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+Z13 tCvgOpt 0
+Xbdscnn_top_sv_unit
+R1
+R2
+R3
+VJD=K@@H8=O4d8QCKeE0=o1
+r1
+!s85 0
+!i10b 1
+!s100 Q6lU<10_YbBHf6l_?E]i@1
+IJD=K@@H8=O4d8QCKeE0=o1
+!i103 1
+S1
+R0
+R5
+R6
+R7
+!i122 109
+Z14 L0 1 0
+R8
+31
+R9
+R10
+R11
+!i113 0
+R12
+R13
+vbnn_avl_wrapper
+R1
+Z15 !s110 1784736498
+!i10b 1
+!s100 3J0[=IWLXfoNQEgbmK[AX2
+IdLe>L6CP]K^j<eD]cd=ID2
+S1
+R0
+R5
+8./../soc_system_tb/simulation/submodules/bnn_avl_wrapper.sv
+F./../soc_system_tb/simulation/submodules/bnn_avl_wrapper.sv
+!i122 108
+L0 1 129
+R4
+R8
+r1
+!s85 0
+31
+R9
+!s107 ./../soc_system_tb/simulation/submodules/bnn_avl_wrapper.sv|
+!s90 -reportprogress|300|-sv|./../soc_system_tb/simulation/submodules/bnn_avl_wrapper.sv|-L|altera_common_sv_packages|-work|bnn_avl_wrapper_0|
+!i113 0
+R12
+R13
+vdw_pe
+R1
+R3
+!i10b 1
+!s100 5?kkdaN1a1b]zF7VjZDFm0
+I8PHOa@^Xl^WzSIAg[kn>m2
+S1
+R0
+R5
+8./../soc_system_tb/simulation/submodules/dw_pe.sv
+F./../soc_system_tb/simulation/submodules/dw_pe.sv
+!i122 110
+L0 1 57
+R4
+R8
+r1
+!s85 0
+31
+Z16 !s108 1784736499.000000
+!s107 ./../soc_system_tb/simulation/submodules/dw_pe.sv|
+!s90 -reportprogress|300|-sv|./../soc_system_tb/simulation/submodules/dw_pe.sv|-L|altera_common_sv_packages|-work|bnn_avl_wrapper_0|
+!i113 0
+R12
+R13
+vdw_top
+R1
+R3
+!i10b 1
+!s100 BbJZ8JGeH2Yc=1[^M286D2
+IFzFai?:z=ajHo72XFhL`@3
+S1
+R0
+R5
+8./../soc_system_tb/simulation/submodules/dw_top.sv
+F./../soc_system_tb/simulation/submodules/dw_top.sv
+!i122 111
+L0 1 89
+R4
+R8
+r1
+!s85 0
+31
+R16
+!s107 ./../soc_system_tb/simulation/submodules/dw_top.sv|
+!s90 -reportprogress|300|-sv|./../soc_system_tb/simulation/submodules/dw_top.sv|-L|altera_common_sv_packages|-work|bnn_avl_wrapper_0|
+!i113 0
+R12
+R13
+Xfc1_constants
+R1
+R15
+!i10b 1
+!s100 967[Q0e3N?Zj>kzk7EXi_1
+IA:a7D>^Y?j?bE54PbG5zf3
+S1
+R0
+R5
+8./../soc_system_tb/simulation/submodules/fc1_constants.sv
+F./../soc_system_tb/simulation/submodules/fc1_constants.sv
+!i122 107
+R14
+VA:a7D>^Y?j?bE54PbG5zf3
+R8
+r1
+!s85 0
+31
+R9
+!s107 ./../soc_system_tb/simulation/submodules/fc1_constants.sv|
+!s90 -reportprogress|300|-sv|./../soc_system_tb/simulation/submodules/fc1_constants.sv|-L|altera_common_sv_packages|-work|bnn_avl_wrapper_0|
+!i113 0
+R12
+R13
+vfc1_folded_neuron
+R1
+R3
+!i10b 1
+!s100 WkP8fzHC5TT[JiSo<g:7?3
+I2LoFgJ^EhW4fn7GZIENcJ3
+S1
+R0
+R5
+8./../soc_system_tb/simulation/submodules/fc1_folded_neuron.sv
+F./../soc_system_tb/simulation/submodules/fc1_folded_neuron.sv
+!i122 112
+L0 1 71
+R4
+R8
+r1
+!s85 0
+31
+R16
+!s107 ./../soc_system_tb/simulation/submodules/fc1_folded_neuron.sv|
+!s90 -reportprogress|300|-sv|./../soc_system_tb/simulation/submodules/fc1_folded_neuron.sv|-L|altera_common_sv_packages|-work|bnn_avl_wrapper_0|
+!i113 0
+R12
+R13
+vfc1_folded_top
+R1
+R2
+DXx4 work 22 fc1_folded_top_sv_unit 0 22 [e5RDbHj^U:RI^i0UR`g@2
+R3
+R4
+r1
+!s85 0
+!i10b 1
+!s100 Zaekg=<khNRz8P62bUViB0
+INfHS73GSm1lQo1U3M:4CK0
+!s105 fc1_folded_top_sv_unit
+S1
+R0
+R5
+Z17 8./../soc_system_tb/simulation/submodules/fc1_folded_top.sv
+Z18 F./../soc_system_tb/simulation/submodules/fc1_folded_top.sv
+!i122 113
+L0 2 47
+R8
+31
+R16
+Z19 !s107 ./../soc_system_tb/simulation/submodules/fc1_folded_top.sv|
+Z20 !s90 -reportprogress|300|-sv|./../soc_system_tb/simulation/submodules/fc1_folded_top.sv|-L|altera_common_sv_packages|-work|bnn_avl_wrapper_0|
+!i113 0
+R12
+R13
+Xfc1_folded_top_sv_unit
+R1
+R2
+R3
+V[e5RDbHj^U:RI^i0UR`g@2
+r1
+!s85 0
+!i10b 1
+!s100 WT8kK;>D>F?G@<F3>kah;1
+I[e5RDbHj^U:RI^i0UR`g@2
+!i103 1
+S1
+R0
+R5
+R17
+R18
+!i122 113
+R14
+R8
+31
+R16
+R19
+R20
+!i113 0
+R12
+R13
+vfc1_folded_top_test
+R1
+R3
+!i10b 1
+!s100 Lozk?8cKc7o>nlZ9DHP8?0
+I112iK3MV86N@;7hL1U<@E2
+S1
+R0
+R5
+8./../soc_system_tb/simulation/submodules/fc1_folded_top_test.sv
+F./../soc_system_tb/simulation/submodules/fc1_folded_top_test.sv
+!i122 114
+L0 1 56
+R4
+R8
+r1
+!s85 0
+31
+R16
+!s107 ./../soc_system_tb/simulation/submodules/fc1_folded_top_test.sv|
+!s90 -reportprogress|300|-sv|./../soc_system_tb/simulation/submodules/fc1_folded_top_test.sv|-L|altera_common_sv_packages|-work|bnn_avl_wrapper_0|
+!i113 0
+R12
+R13
+vfc1_neuron
+R1
+R3
+!i10b 1
+!s100 mK_eo;@Rg@i0^;mfiF;K=3
+Id:FGRlNYo60bVH15aY^i]0
+S1
+R0
+R5
+8./../soc_system_tb/simulation/submodules/fc1_neuron.sv
+F./../soc_system_tb/simulation/submodules/fc1_neuron.sv
+!i122 115
+L0 1 117
+R4
+R8
+r1
+!s85 0
+31
+R16
+!s107 ./../soc_system_tb/simulation/submodules/fc1_neuron.sv|
+!s90 -reportprogress|300|-sv|./../soc_system_tb/simulation/submodules/fc1_neuron.sv|-L|altera_common_sv_packages|-work|bnn_avl_wrapper_0|
+!i113 0
+R12
+R13
+vfc1_top
+R1
+R2
+Z21 !s110 1784736500
+!i10b 1
+!s100 ;@WQmgVeb4;`1RZojRWL[3
+IAbU:6Efb=ofV3@35M]8YN2
+S1
+R0
+R5
+8./../soc_system_tb/simulation/submodules/fc1_top.sv
+F./../soc_system_tb/simulation/submodules/fc1_top.sv
+!i122 116
+Z22 L0 1 63
+R4
+R8
+r1
+!s85 0
+31
+R16
+!s107 ./../soc_system_tb/simulation/submodules/fc1_top.sv|
+!s90 -reportprogress|300|-sv|./../soc_system_tb/simulation/submodules/fc1_top.sv|-L|altera_common_sv_packages|-work|bnn_avl_wrapper_0|
+!i113 0
+R12
+R13
+vfc2_top
+R1
+R21
+!i10b 1
+!s100 GoCD@7cS=i:ZSmGXOCoDQ2
+IUH]HNVlGjF5z4TRNiU0]32
+S1
+R0
+R5
+8./../soc_system_tb/simulation/submodules/fc2_top.sv
+F./../soc_system_tb/simulation/submodules/fc2_top.sv
+!i122 117
+L0 1 926
+R4
+R8
+r1
+!s85 0
+31
+Z23 !s108 1784736500.000000
+!s107 ./../soc_system_tb/simulation/submodules/fc2_top.sv|
+!s90 -reportprogress|300|-sv|./../soc_system_tb/simulation/submodules/fc2_top.sv|-L|altera_common_sv_packages|-work|bnn_avl_wrapper_0|
+!i113 0
+R12
+R13
+vmcp_pe
+R1
+R21
+!i10b 1
+!s100 hgNa]VgWo4;TZ?X5;BBg;2
+In0DLRDjmW5FWAzzcce0P00
+S1
+R0
+R5
+8./../soc_system_tb/simulation/submodules/mcp_pe.sv
+F./../soc_system_tb/simulation/submodules/mcp_pe.sv
+!i122 118
+L0 1 59
+R4
+R8
+r1
+!s85 0
+31
+R23
+!s107 ./../soc_system_tb/simulation/submodules/mcp_pe.sv|
+!s90 -reportprogress|300|-sv|./../soc_system_tb/simulation/submodules/mcp_pe.sv|-L|altera_common_sv_packages|-work|bnn_avl_wrapper_0|
+!i113 0
+R12
+R13
+vmcp_top
+R1
+R21
+!i10b 1
+!s100 Zf5R`MR1YjT`:eSd3CJ0c0
+I0`4oTV]g^[lJ?XneJBC`X1
+S1
+R0
+R5
+8./../soc_system_tb/simulation/submodules/mcp_top.sv
+F./../soc_system_tb/simulation/submodules/mcp_top.sv
+!i122 119
+R22
+R4
+R8
+r1
+!s85 0
+31
+R23
+!s107 ./../soc_system_tb/simulation/submodules/mcp_top.sv|
+!s90 -reportprogress|300|-sv|./../soc_system_tb/simulation/submodules/mcp_top.sv|-L|altera_common_sv_packages|-work|bnn_avl_wrapper_0|
+!i113 0
+R12
+R13
+vpopcount
+R1
+R21
+!i10b 1
+!s100 PV?<4VPgD]k`AFHHnE[BM0
+I]6UDFjT`a`neoOP[640gh2
+S1
+R0
+R5
+8./../soc_system_tb/simulation/submodules/popcount.sv
+F./../soc_system_tb/simulation/submodules/popcount.sv
+!i122 120
+L0 1 22
+R4
+R8
+r1
+!s85 0
+31
+R23
+!s107 ./../soc_system_tb/simulation/submodules/popcount.sv|
+!s90 -reportprogress|300|-sv|./../soc_system_tb/simulation/submodules/popcount.sv|-L|altera_common_sv_packages|-work|bnn_avl_wrapper_0|
+!i113 0
+R12
+R13
+vpw_pe
+R1
+Z24 !s110 1784736501
+!i10b 1
+!s100 l92SZz9Cai=OcYRSWKmKf2
+IGAR;VSfGUYTf0dgD<RS:>1
+S1
+R0
+R5
+8./../soc_system_tb/simulation/submodules/pw_pe.sv
+F./../soc_system_tb/simulation/submodules/pw_pe.sv
+!i122 124
+L0 1 75
+R4
+R8
+r1
+!s85 0
+31
+Z25 !s108 1784736501.000000
+!s107 ./../soc_system_tb/simulation/submodules/pw_pe.sv|
+!s90 -reportprogress|300|-sv|./../soc_system_tb/simulation/submodules/pw_pe.sv|-L|altera_common_sv_packages|-work|bnn_avl_wrapper_0|
+!i113 0
+R12
+R13
+vpw_top
+R1
+R24
+!i10b 1
+!s100 8];13b:=4[8^;Kh2A_M1j1
+INDFJloQMBgnW:XAgodG=g2
+S1
+R0
+R5
+8./../soc_system_tb/simulation/submodules/pw_top.sv
+F./../soc_system_tb/simulation/submodules/pw_top.sv
+!i122 123
+L0 1 84
+R4
+R8
+r1
+!s85 0
+31
+R25
+!s107 ./../soc_system_tb/simulation/submodules/pw_top.sv|
+!s90 -reportprogress|300|-sv|./../soc_system_tb/simulation/submodules/pw_top.sv|-L|altera_common_sv_packages|-work|bnn_avl_wrapper_0|
+!i113 0
+R12
+R13
+vwindow3x3s1
+R1
+R24
+!i10b 1
+!s100 AhAlh4XYAl>BiVaCZ>PIG2
+IWU:fMDCk7_J0@P[6H5nU11
+S1
+R0
+R5
+8./../soc_system_tb/simulation/submodules/window3x3s1.sv
+F./../soc_system_tb/simulation/submodules/window3x3s1.sv
+!i122 121
+L0 1 96
+R4
+R8
+r1
+!s85 0
+31
+R23
+!s107 ./../soc_system_tb/simulation/submodules/window3x3s1.sv|
+!s90 -reportprogress|300|-sv|./../soc_system_tb/simulation/submodules/window3x3s1.sv|-L|altera_common_sv_packages|-work|bnn_avl_wrapper_0|
+!i113 0
+R12
+R13
+vwindow4x4s2
+R1
+R24
+!i10b 1
+!s100 8kM_M[?VC11TIKaVNfH621
+IiYK2n4^CnJR2T=SikFZP]3
+S1
+R0
+R5
+8./../soc_system_tb/simulation/submodules/window4x4s2.sv
+F./../soc_system_tb/simulation/submodules/window4x4s2.sv
+!i122 122
+L0 1 66
+R4
+R8
+r1
+!s85 0
+31
+R25
+!s107 ./../soc_system_tb/simulation/submodules/window4x4s2.sv|
+!s90 -reportprogress|300|-sv|./../soc_system_tb/simulation/submodules/window4x4s2.sv|-L|altera_common_sv_packages|-work|bnn_avl_wrapper_0|
+!i113 0
+R12
+R13

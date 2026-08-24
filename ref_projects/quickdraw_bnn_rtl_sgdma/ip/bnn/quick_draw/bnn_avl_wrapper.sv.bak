@@ -1,0 +1,129 @@
+module bnn_avl_wrapper (
+    input  logic        clk,
+    input  logic        rst_n,
+
+    // Avalon Streaming Sink (Nhận từ DMA)
+    input  logic [31:0] avl_s_data,
+    input  logic        avl_s_valid,
+    output logic        avl_s_ready,
+
+    // Avalon Memory-Mapped Agent (HPS đọc)
+    input  logic [0:0]  avl_mm_address,
+    input  logic        avl_mm_read,
+    output logic [31:0] avl_mm_readdata
+);
+
+  // ===================================================
+  // 1. RAM ĐỆM ẢNH (Bảo vệ BNN khỏi độ trễ DDR3)
+  // ===================================================
+  logic [31:0] img_buf [0:31];
+  logic [4:0]  rx_word_idx;
+  logic        rx_done;
+  // ===================================================
+  // 3. KẾT NỐI VỚI LÕI BNN
+  // ===================================================
+  logic       sys_valid;
+  logic [3:0] class_out;
+  assign avl_s_ready = !rx_done; // Ngừng nhận khi đã đầy buffer
+
+  // ===================================================
+  // 2. MÔ PHỎNG LẠI CHUẨN TIMING CỦA MODELSIM
+  // ===================================================
+  logic [5:0]  tx_word_idx; // Dùng 6-bit để đếm từ 0->32
+  logic [5:0]  bit_cnt;
+  logic [31:0] shift_reg;
+  logic        is_shifting;
+
+  always_ff @(posedge clk or negedge rst_n) begin
+    if (!rst_n) begin
+      rx_word_idx <= '0;
+      rx_done     <= 1'b0;
+      tx_word_idx <= '0;
+      bit_cnt     <= '0;
+      is_shifting <= 1'b0;
+      shift_reg   <= '0;
+    end else begin
+      
+      // --- GIAI ĐOẠN 1: Hút trọn vẹn ảnh từ DMA ---
+      if (avl_s_valid && avl_s_ready) begin
+        img_buf[rx_word_idx] <= avl_s_data;
+        if (rx_word_idx == 5'd31) begin
+          rx_done <= 1'b1; // Hút xong 1024 bits, chuyển sang Playback
+        end
+        rx_word_idx <= rx_word_idx + 1'b1;
+      end
+
+      // --- GIAI ĐOẠN 2: Bơm data vào BNN chuẩn 100% ModelSim ---
+      if (rx_done) begin
+        if (!is_shifting) begin
+          // Load 1 word mới (tạo ra đúng 1 chu kỳ gap như ModelSim)
+          if (tx_word_idx < 6'd32) begin
+            shift_reg   <= img_buf[tx_word_idx];
+            bit_cnt     <= 6'd32;
+            is_shifting <= 1'b1;
+            tx_word_idx <= tx_word_idx + 1'b1;
+          end
+        end else begin
+          // Dịch 32 bit liên tục
+          if (bit_cnt > 1) begin
+            shift_reg <= {1'b0, shift_reg[31:1]};
+            bit_cnt   <= bit_cnt - 1'b1;
+          end else begin
+            is_shifting <= 1'b0; // Ngừng dịch, chờ load word tiếp theo
+          end
+        end
+      end
+      
+      // Dọn dẹp Buffer chuẩn bị đón ảnh tiếp theo khi BNN báo xong
+      if (sys_valid) begin
+        rx_done     <= 1'b0;
+        rx_word_idx <= '0;
+        tx_word_idx <= '0;
+      end
+    end
+  end
+
+  
+
+  bdscnn_top u_bdscnn (
+      .clk       (clk),
+      .rst_n     (rst_n),
+      .img_valid (is_shifting),
+      .img_data  (shift_reg[0]), // Bơm LSB-first
+      .sys_valid (sys_valid),
+      .class_out (class_out)
+  );
+
+  // ===================================================
+  // 4. AVALON-MM (Fix Priority If-Else theo Senior)
+  // ===================================================
+  logic [31:0] result_reg;
+  logic        done_flag;
+
+  always_ff @(posedge clk or negedge rst_n) begin
+    if (!rst_n) begin
+      result_reg <= '0;
+      done_flag  <= 1'b0;
+    end else begin
+      if (sys_valid) begin
+        result_reg <= {28'd0, class_out};
+        done_flag  <= 1'b1;
+      end else if (avl_mm_read && avl_mm_address == 1'b0) begin
+        done_flag  <= 1'b0;
+      end
+    end
+  end
+
+  always_comb begin
+    if (avl_mm_read) begin
+      case (avl_mm_address)
+        1'b0: avl_mm_readdata = {done_flag, 31'd0} | result_reg;
+        1'b1: avl_mm_readdata = {31'd0, is_shifting};
+        default: avl_mm_readdata = 32'd0;
+      endcase
+    end else begin
+      avl_mm_readdata = 32'd0;
+    end
+  end
+
+endmodule

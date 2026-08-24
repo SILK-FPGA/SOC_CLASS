@@ -1,0 +1,83 @@
+m255
+K4
+z2
+!s11f vlog 2021.2_1 2021.05, May 15 2021
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 d/home/huyatieo/Desktop/project/bnn_soc/soc_system/testbench/mentor
+valtera_merlin_address_alignment
+Z1 DXx6 sv_std 3 std 0 22 9oUSJO;AeEaW`l:M@^WG92
+Z2 !s110 1784736470
+!i10b 1
+!s100 d[l4mS4WfF?SDFFCfRDR=1
+IKf8b<[_d:A8N<Ri]EA8Ib3
+S1
+R0
+Z3 w1784735722
+8./../soc_system_tb/simulation/submodules/altera_merlin_address_alignment.sv
+F./../soc_system_tb/simulation/submodules/altera_merlin_address_alignment.sv
+!i122 25
+L0 26 238
+Z4 VDg1SIo80bB@j0V0VzS_@n1
+Z5 OL;L;2021.2_1;73
+r1
+!s85 0
+31
+Z6 !s108 1784736470.000000
+!s107 ./../soc_system_tb/simulation/submodules/altera_merlin_address_alignment.sv|
+!s90 -reportprogress|300|-sv|./../soc_system_tb/simulation/submodules/altera_merlin_address_alignment.sv|-L|altera_common_sv_packages|-work|mm_bridge_0_s0_rsp_width_adapter|
+!i113 0
+Z7 o-sv -L altera_common_sv_packages -work mm_bridge_0_s0_rsp_width_adapter -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+Z8 tCvgOpt 0
+valtera_merlin_burst_uncompressor
+R1
+R2
+!i10b 1
+!s100 f5?g@0D[3mRE6h_kkF_Tg3
+IO1C5dMQUd`Zgc8?_;9VM[2
+S1
+R0
+R3
+8./../soc_system_tb/simulation/submodules/altera_merlin_burst_uncompressor.sv
+F./../soc_system_tb/simulation/submodules/altera_merlin_burst_uncompressor.sv
+!i122 26
+L0 40 256
+R4
+R5
+r1
+!s85 0
+31
+R6
+!s107 ./../soc_system_tb/simulation/submodules/altera_merlin_burst_uncompressor.sv|
+!s90 -reportprogress|300|-sv|./../soc_system_tb/simulation/submodules/altera_merlin_burst_uncompressor.sv|-L|altera_common_sv_packages|-work|mm_bridge_0_s0_rsp_width_adapter|
+!i113 0
+R7
+R8
+valtera_merlin_width_adapter
+R1
+R2
+!i10b 1
+!s100 nQ5>6GBj@@Ok?4LT>h30N0
+ITc^jA3VkNM_]<5bgGX;461
+S1
+R0
+R3
+8./../soc_system_tb/simulation/submodules/altera_merlin_width_adapter.sv
+F./../soc_system_tb/simulation/submodules/altera_merlin_width_adapter.sv
+!i122 24
+L0 25 1181
+R4
+R5
+r1
+!s85 0
+31
+!s108 1784736469.000000
+!s107 ./../soc_system_tb/simulation/submodules/altera_merlin_width_adapter.sv|
+!s90 -reportprogress|300|-sv|./../soc_system_tb/simulation/submodules/altera_merlin_width_adapter.sv|-L|altera_common_sv_packages|-work|mm_bridge_0_s0_rsp_width_adapter|
+!i113 0
+R7
+R8

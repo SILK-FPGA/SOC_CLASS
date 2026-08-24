@@ -1,0 +1,131 @@
+m255
+K4
+z2
+!s11f vlog 2021.2_1 2021.05, May 15 2021
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 d/home/huyatieo/Desktop/project/bnn_soc/soc_system/testbench/mentor
+valtera_merlin_arb_adder
+Z1 DXx6 sv_std 3 std 0 22 9oUSJO;AeEaW`l:M@^WG92
+Z2 !s110 1784736471
+!i10b 1
+!s100 i`gEcf6CXTclhiOMi9mRD2
+I1bT3EOS_JL1g@m0VMod1j1
+S1
+R0
+Z3 w1784735722
+Z4 8./../soc_system_tb/simulation/submodules/altera_merlin_arbitrator.sv
+Z5 F./../soc_system_tb/simulation/submodules/altera_merlin_arbitrator.sv
+!i122 53
+L0 228 45
+Z6 VDg1SIo80bB@j0V0VzS_@n1
+Z7 OL;L;2021.2_1;73
+r1
+!s85 0
+31
+Z8 !s108 1784736471.000000
+!s107 ./../soc_system_tb/simulation/submodules/altera_merlin_arbitrator.sv|
+Z9 !s90 -reportprogress|300|-sv|./../soc_system_tb/simulation/submodules/altera_merlin_arbitrator.sv|-L|altera_common_sv_packages|-work|cmd_mux|
+!i113 0
+Z10 o-sv -L altera_common_sv_packages -work cmd_mux -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+Z11 tCvgOpt 0
+valtera_merlin_arbitrator
+R1
+R2
+!i10b 1
+!s100 ]2njmcIAE=WRz[E876GaK3
+IRLUGEbRH;FZI[7lQfoUgA1
+S1
+R0
+R3
+R4
+R5
+!i122 53
+L0 103 121
+R6
+R7
+r1
+!s85 0
+31
+R8
+Z12 !s107 ./../soc_system_tb/simulation/submodules/altera_merlin_arbitrator.sv|
+R9
+!i113 0
+R10
+R11
+vsoc_system_mm_interconnect_0_cmd_mux
+R1
+R2
+!i10b 1
+!s100 SXa=_ZfNKHfo=EEiTb=Le1
+IPZlO`BFkUoUIFzCT9R^1L1
+S1
+R0
+R3
+8./../soc_system_tb/simulation/submodules/soc_system_mm_interconnect_0_cmd_mux.sv
+F./../soc_system_tb/simulation/submodules/soc_system_mm_interconnect_0_cmd_mux.sv
+!i122 52
+L0 51 270
+R6
+R7
+r1
+!s85 0
+31
+R8
+!s107 ./../soc_system_tb/simulation/submodules/soc_system_mm_interconnect_0_cmd_mux.sv|
+!s90 -reportprogress|300|-sv|./../soc_system_tb/simulation/submodules/soc_system_mm_interconnect_0_cmd_mux.sv|-L|altera_common_sv_packages|-work|cmd_mux|
+!i113 0
+R10
+R11
+vsoc_system_mm_interconnect_1_cmd_mux
+R1
+!s110 1784736467
+!i10b 1
+!s100 0FeKdYYcCfNC:Y28h<SgM2
+ImQ4f8n[_[8^KIDS^O_F6<0
+S1
+R0
+R3
+8./../soc_system_tb/simulation/submodules/soc_system_mm_interconnect_1_cmd_mux.sv
+F./../soc_system_tb/simulation/submodules/soc_system_mm_interconnect_1_cmd_mux.sv
+!i122 50
+Z13 L0 51 44
+R6
+R7
+r1
+!s85 0
+31
+!s108 1784736467.000000
+!s107 ./../soc_system_tb/simulation/submodules/soc_system_mm_interconnect_1_cmd_mux.sv|
+!s90 -reportprogress|300|-sv|./../soc_system_tb/simulation/submodules/soc_system_mm_interconnect_1_cmd_mux.sv|-L|altera_common_sv_packages|-work|cmd_mux|
+!i113 0
+R10
+R11
+vsoc_system_mm_interconnect_2_cmd_mux
+R1
+!s110 1784736465
+!i10b 1
+!s100 >P1z1Q3YB7GGU4eo97T]^3
+I6;3V]:b]8:^=iAXC]P[X]1
+S1
+R0
+R3
+8./../soc_system_tb/simulation/submodules/soc_system_mm_interconnect_2_cmd_mux.sv
+F./../soc_system_tb/simulation/submodules/soc_system_mm_interconnect_2_cmd_mux.sv
+!i122 48
+R13
+R6
+R7
+r1
+!s85 0
+31
+!s108 1784736465.000000
+!s107 ./../soc_system_tb/simulation/submodules/soc_system_mm_interconnect_2_cmd_mux.sv|
+!s90 -reportprogress|300|-sv|./../soc_system_tb/simulation/submodules/soc_system_mm_interconnect_2_cmd_mux.sv|-L|altera_common_sv_packages|-work|cmd_mux|
+!i113 0
+R10
+R11
