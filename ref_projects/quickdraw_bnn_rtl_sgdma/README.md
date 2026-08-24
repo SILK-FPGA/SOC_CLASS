@@ -1,0 +1,4 @@
+# SỬ DỤNG SGDMA VỚI BNN
+# NGUYÊN LÍ
+# KẾT QUẢ
+# CHẠY REMOTE LAB
