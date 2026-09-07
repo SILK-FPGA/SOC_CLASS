@@ -309,3 +309,36 @@ strings build/u-boot-with-spl.sfp \
 
 sha256sum build/u-boot-with-spl.sfp
 ```
+Kết quả khi build thành công:
+
+<img width="1842" height="271" alt="image" src="https://github.com/user-attachments/assets/b6d3c38e-deb4-4ba2-836a-3beb36847100" />
+
+File quan trọng nhất được tạo ra là: build/u-boot-with-spl.sfp, đây là phiên bản v2026.07.
+
+**Vai trò của bootloader with spl**: Nhiệm vụ của nó mình khái quát đơn giản như sau, giúp cho CPU sau khi được cấp nguồn và "thức dậy" có thể sẵn sàng vào trạng thái load linux kernel:
+```
+POWER ON
+   ↓
+Cyclone V BootROM
+   ↓
+đọc partition 0xA2 trên SD card
+   ↓
+u-boot-with-spl.sfp
+   │
+   ├── U-Boot SPL
+   │      ↓
+   │   init clock
+   │   init pinmux
+   │   init DDR3
+   │   init SD/MMC
+   │
+   └── U-Boot proper
+          ↓
+       đọc FAT partition
+          ↓
+       load zImage
+       load DTB
+          ↓
+       boot Linux
+```
+
