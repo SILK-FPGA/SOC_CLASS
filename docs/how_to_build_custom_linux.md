@@ -124,25 +124,17 @@ Thêm chân conduit, để nối với led ở ngoài FPGA.
 Đảm bảo *Message* không báo bất kì errors nào, lưu lại và bấm Finish, nhớ là mỗi lần chỉnh sửa code RTL '.v,.sv' thì đều phải vào cửa sổ ở trên rồi ấn Analyze Synthesis File và lưu lại
 nhé.
 
-Còn một bước cuối cùng để hoàn tất việc tạo thành phần tùy chỉnh của chúng ta. Sau này, khi chuẩn bị cấu hình và biên dịch kernel Linux, chúng ta sẽ tạo ra một Device Tree 
-để thông báo cho nhân hệ điều hành biết những loại phần cứng nào đang hiện diện trong hệ thống. Kernel hệ điều hành có thể sử dụng thông tin này, chẳng hạn như để nạp các trình 
-điều khiển (driver) tương ứng. Để đảm bảo custom IP được thêm vào Device Tree một cách chính xác, chúng ta cần chỉnh sửa tệp `custom_leds_hw.tcl` – tệp tin được Qsys tạo ra khi 
-chúng ta lưu lại các thay đổi vừa thực hiện.
-```
-# Device tree generation
-set_module_assignment embeddedsw.dts.vendor "dsa"
-set_module_assignment embeddedsw.dts.compatible "dev,custom-leds"
-set_module_assignment embeddedsw.dts.group "leds"
-```
 ### Kết nối custom_led với hệ thống
 Để thêm linh custom ip vào thiết kế phần cứng, hãy nhấp đúp vào mục "Custom LEDs" trong phần Project thuộc thẻ IP Catalog,
 sau đó nhấp vào nút Finish trên cửa sổ xuất hiện:
 
 <img width="277" height="298" alt="image" src="https://github.com/user-attachments/assets/31c2aca8-e230-4de2-a9ca-c8d22ad23c1a" />
 
-Sau khi đã thêm thành phần tùy chỉnh vào thiết kế phần cứng, chúng ta cần kết nối nó với phần còn lại của hệ thống. Như hình dưới
+Sau khi đã thêm thành phần tùy chỉnh vào thiết kế phần cứng, chúng ta cần kết nối nó với phần còn lại của hệ thống. Ngoài ra ta cũng bỏ đi các IP không cần thiết để đỡ rối mắt
+Như hình dưới:
 
-<img width="1845" height="745" alt="image" src="https://github.com/user-attachments/assets/922e3a05-998a-490b-a99d-03bb07860636" />
+<img width="1845" height="745" alt="image" src="https://github.com/user-attachments/assets/f75a1339-f6d4-4af5-b3fb-a7b7d62cc103" />
+
 
 Bước cuối cùng là thiết lập kết nối cho cổng ra `leds` . Nhấp chuột phải vào `leds` thuộc instance `custom_leds_0` và chọn **Connections**: `custom_leds_0.leds` → **Export as**: `custom_leds_0_leds`. 
 Thao tác này xuất cổng ra `leds` của IP tùy chỉnh thành một external, để có thể truy cập  ở vùng FPGA, vì chúng ta muốn kết nối nó với các đèn LED trên FPGA.
@@ -167,11 +159,12 @@ và mở tệp `soc_system/synthesis/soc_system.v`:
 
 Tìm 'new_component':
 
-<img width="669" height="168" alt="image" src="https://github.com/user-attachments/assets/22a15f80-d76f-41a5-bb14-95f9a44c546c" />
+<img width="1845" height="745" alt="image" src="https://github.com/user-attachments/assets/193e0206-e864-4cfa-a660-10d37cfaebf3" />
 
 Sửa lại thành custom_leds:
 
-<img width="662" height="162" alt="image" src="https://github.com/user-attachments/assets/03953666-1cd3-40f7-88b2-29bfd9c87cf5" />
+<img width="1845" height="745" alt="image" src="https://github.com/user-attachments/assets/dee51b9a-e3d1-483c-a505-ac44c4dbde85" />
+
 
 ### Tổng hợp và tạo file rbf
 
@@ -183,3 +176,136 @@ Bước này mình đã chỉ ở các bài trước, các bạn cứ làm theo 
 
 <img width="1847" height="1048" alt="image" src="https://github.com/user-attachments/assets/e0daafe6-f279-4b28-83f7-57f861ef0b2e" />
 
+## Biên dịch Uboot
+### Setup môi trường
+Ta cần các thư viện, tools và các gói cài đặt để biên dịch chủ yếu trong 3 nhóm như sau:
+```
+Host build tools (tool biên dịch chéo trên laptop kiến trúc x86-64)
+├── git
+├── gcc
+├── make
+├── bison
+└── flex
+
+ARM cross compiler (biên dịch chéo của arm)
+└── gcc-arm-linux-gnueabihf
+
+U-Boot supporting tools/libraries (hỗ trợ uboot)
+├── OpenSSL
+├── ncurses
+├── Python
+├── pyelftools
+├── SWIG
+└── dtc
+```
+Tạo thư mục để thiết kế và setup môi trường thay vì cài lung trong home:
+```
+mkdir -p ~/de10nano-linux-lab
+cd ~/de10nano-linux-lab
+```
+Kéo github với Uboot gốc từ cộng đồng mã nguồn mở chính thức (Das Uboot), đảm bảo clone với 1 nhánh cố định, để đảm bảo đồng nhất giữa các lần build. 
+```
+cd ~/de10nano-linux-lab
+git clone https://github.com/u-boot/u-boot.git
+
+cd u-boot
+
+git checkout v2026.07 #chọn branch cụ thể để check out
+
+```
+Export và kiểm tra môi trường để biên dịch
+```
+export ARCH=arm
+export CROSS_COMPILE=arm-linux-gnueabihf-
+${CROSS_COMPILE}gcc --version
+${CROSS_COMPILE}gcc -dumpmachine
+```
+Thiết lập Uboot cho board DE10-Nano và build Uboot
+```
+rm -rf build
+
+make O=build socfpga_de10_nano_defconfig
+
+make O=build -j$(nproc)
+```
+Kiểm tra kết quả
+```
+#check result
+
+ls -lh \
+    build/u-boot \
+    build/u-boot.bin \
+    build/spl/u-boot-spl.bin \
+    build/u-boot-with-spl.sfp
+
+
+#kiểm tra lỗi
+
+strings build/u-boot-with-spl.sfp \
+    | grep -E 'U-Boot SPL|U-Boot 20' \
+    | head
+
+sha256sum build/u-boot-with-spl.sfp
+```
+
+### Code hoàn chỉnh
+Đoạn code biên dịch hoàn chỉnh, có thể copy và paste chạy ngay.
+```
+
+sudo apt update
+
+sudo apt install -y \
+    git \
+    build-essential \
+    gcc-arm-linux-gnueabihf \
+    bc \
+    bison \
+    flex \
+    libssl-dev \
+    libgnutls28-dev \
+    libncurses-dev \
+    python3 \
+    python3-dev \
+    python3-setuptools \
+    python3-pyelftools \
+    swig \
+    device-tree-compiler \
+    pkg-config
+
+mkdir -p ~/de10nano-linux-lab
+cd ~/de10nano-linux-lab
+
+git clone https://github.com/u-boot/u-boot.git
+
+cd u-boot
+
+git checkout v2026.07
+
+export ARCH=arm
+export CROSS_COMPILE=arm-linux-gnueabihf-
+
+
+${CROSS_COMPILE}gcc --version
+${CROSS_COMPILE}gcc -dumpmachine
+
+
+rm -rf build
+
+make O=build socfpga_de10_nano_defconfig
+
+make O=build -j$(nproc)
+
+
+ls -lh \
+    build/u-boot \
+    build/u-boot.bin \
+    build/spl/u-boot-spl.bin \
+    build/u-boot-with-spl.sfp
+
+
+strings build/u-boot-with-spl.sfp \
+    | grep -E 'U-Boot SPL|U-Boot 20' \
+    | head
+
+sha256sum build/u-boot-with-spl.sfp
+```
