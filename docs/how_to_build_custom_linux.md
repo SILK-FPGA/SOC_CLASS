@@ -26,7 +26,7 @@ có giao diện GUI đẹp lên màn hình.
 
 Tiếp theo, ta cần 2 công cụ mà mình đã hướng dẫn cài trong khóa học:
 - Quartus Lite (bản 20.1 theo mình là ổn định nhất).
-- SoC_EDS.
+- SoC_EDS (BSP editor, nhưng cái này hay lỗi và đã lỗi thời nên mình build theo cách mới nhất).
 
 Khi tải về, toàn bộ sẽ nằm trong thư mục intelFPGA_lite/ 
 
