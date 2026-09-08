@@ -1,14 +1,16 @@
 # Mục tiêu
 
 Sau khi xem toàn bộ nội dung bên dưới, các bạn có thể nắm được:
-- Tự build một hệ điều hành linux nhúng tùy chỉnh (custom embedded linux image).
+- Tự build một hệ điều hành linux nhúng tùy chỉnh (custom embedded linux image) từ đầu tới cuối.
 - Tự biết cần phải làm gì khi mới mua board SoC của Altera, hoặc mới tiếp xúc lần đầu với các board SoC khác.
 - Sử dụng Qsys (cái này đã chỉ xuyên suốt trong khóa học).
 - Tự tạo IP tùy chỉnh và code cho userspace (cái này đã chỉ xuyên suốt khóa học).
+- Tùy chỉnh và sửa lại một kernel image có sẵn.
 
 Toàn bộ nội dung được cập nhật mới nhất cho tới tháng 9/2026, hệ điều hành debian linux, nên những bạn nào sử dụng hệ điều hành Window thì có thể khác đôi chút. Hướng dẫn dựa trên kinh
 nghiệm cá nhân, nếu không chạy được ở bước nào thì các bạn liên hệ lại trong khóa học nhé.
 
+# Tự build kernel linux từ đầu tới cuối
 # Bước 1: Chuẩn bị
 
 Các bạn mới tiếp xúc Altera SoC FPGA lần đầu hay mới mua board về, cần làm đầu tiên là các bạn hãy lên trang của nhà sản xuất. Cài các property của board đi kèm, thường là trang chủ của 
@@ -27,7 +29,7 @@ có giao diện GUI đẹp lên màn hình.
 Tiếp theo, ta cần 2 công cụ mà mình đã hướng dẫn cài trong khóa học:
 - Quartus Lite (bản 20.1 theo mình là ổn định nhất).
 - SoC_EDS (BSP editor, nhưng cái này hay lỗi và đã lỗi thời nên mình build theo cách mới nhất).
-
+- Thẻ SD ít nhất 32GB trở lên.
 Khi tải về, toàn bộ sẽ nằm trong thư mục intelFPGA_lite/ 
 
 <img width="1248" height="670" alt="image" src="https://github.com/user-attachments/assets/5d7db4bf-4431-44ac-aca6-aff5add0d06b" />
@@ -489,7 +491,7 @@ ${CROSS_COMPILE}nm build/vmlinux \
     | grep -i uvc \
     | head
 ```
-## Kiểm tra Linux vừa build
+### Kiểm tra Linux vừa build
 
 Mục tiêu của chúng ta là Linux có đầy đủ FPGA manager (để nạp bitstream vào vùng FPGA), bridge manager (để điều khiển các cây cầu H2F, F2H, F2SDRAM), Các driver của USB và media. 
 lệnh check sau khi build:
@@ -527,6 +529,47 @@ make O=build -j$(nproc) \
     zImage \
     dtbs \
     modules
+```
+### Cấu hình Device Tree
+# Tùy chỉnh và sửa lại một kernel image có sẵn:
+
+Giả sử ta không muốn làm các bước như trên vì quá phức tạp và dễ phát sinh lỗi, có thể lấy một kernel image có sẵn để tự thêm vào các driver còn thiếu. Ví dụ như driver USB camera đang 
+bị thiếu với **debian_5.12_bsp_v1.0** được cung cấp trong phần release của github này. Trong hướng dẫn bên dưới sẽ chỉ cách thêm uvc driver còn thiếu vào.
+## Setup
+
+Trước tiên copy image đã tải về vào thư mục làm việc
+```
+cd ~/de10nano-linux-lab/linux
+cp --reflink=auto \
+
+    de10nano-huyatieo-5.12-golden.img \
+
+    de10nano-huyatieo-5.12-uvc.img
+```
+
+Giờ ta chỉ sửa trên de10nano-huyatieo-5.12-uvc.img mà thôi.
+
+### Phân tích image gốc 
+Click đúp vào de10nano-huyatieo-5.12-golden.img có dung lượng khoảng 2GB, mở bung ra ta sẽ thấy có 2 phân vùng 266MB và 1.9GB
+
+Phân vùng 266MB chứa thư mục extlinux/ file devicetree *.dtb và zImage (đây là file ta sẽ chỉnh sửa)
+
+<img width="1614" height="961" alt="image" src="https://github.com/user-attachments/assets/2176a300-4c17-45f0-b4db-30b82be5719d" />
+
+Phân vùng 1.9GB chứa các thư mục systemd của hệ thống
+
+<img width="1614" height="961" alt="image" src="https://github.com/user-attachments/assets/071b0744-5e82-481c-92c7-bd21036d9e80" />
+
+
+## Build lại với uvc
+Tiếp đến, kéo linux kernel 5.12 gốc y hệt như bản build sẵn:
+```
+git clone \
+    --depth 1 \
+    --single-branch \
+    --branch socfpga-5.12 \
+    https://github.com/altera-opensource/linux-socfpga.git \
+    linux-socfpga-5.12-uvc
 ```
 
 
