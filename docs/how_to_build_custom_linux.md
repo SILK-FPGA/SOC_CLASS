@@ -534,7 +534,7 @@ make O=build -j$(nproc) \
 # Tùy chỉnh và sửa lại một kernel image có sẵn:
 
 Giả sử ta không muốn làm các bước như trên vì quá phức tạp và dễ phát sinh lỗi, có thể lấy một kernel image có sẵn để tự thêm vào các driver còn thiếu. Ví dụ như driver USB camera đang 
-bị thiếu với **debian_5.12_bsp_v1.0** được cung cấp trong phần release của github này. Trong hướng dẫn bên dưới sẽ chỉ cách thêm uvc driver còn thiếu vào.
+bị thiếu với **debian_5.12_bsp_v1.0** và toolchain **GNU** gốc được cung cấp trong phần release của github này. Trong hướng dẫn bên dưới sẽ chỉ cách thêm uvc driver còn thiếu vào.
 ## Setup
 
 Trước tiên copy image đã tải về vào thư mục làm việc
@@ -561,7 +561,7 @@ Phân vùng 1.9GB chứa các thư mục systemd của hệ thống
 <img width="1614" height="961" alt="image" src="https://github.com/user-attachments/assets/071b0744-5e82-481c-92c7-bd21036d9e80" />
 
 
-## Build lại với uvc
+### Build lại với uvc
 Tiếp đến, kéo linux kernel 5.12 gốc y hệt như bản build sẵn:
 ```
 git clone \
@@ -572,6 +572,163 @@ git clone \
     linux-socfpga-5.12-uvc
 ```
 
+Tải từ release file config 'linux-5.12-author.config' và chạy lệnh bên dưới :
+```
+cd ~/de10nano-linux-lab/linux-socfpga-5.12-uvc
+cp ~/de10nano-linux-lab/linux-5.12-author.config \
+   .config
+```
+Tải từ release file 'gcc-arm-10.3-2021.7.tar.xz', và chạy lệnh bên dưới
+```
+mkdir -p ~/toolchains #tạo thư mục lam việc
+
+#giai nen vao toolchains
+
+tar -xf \
+gcc-arm-10.3-2021.07-x86_64-arm-none-linux-gnueabihf.tar.xz \
+-C ~/toolchains
+```
+Export môi trường:
+```
+export ARCH=arm
+export PATH=$HOME/toolchains/gcc-arm-10.3-2021.07-x86_64-arm-none-linux-gnueabihf/bin:$PATH
+export CROSS_COMPILE=arm-none-linux-gnueabihf-
+
+```
+
+**Lưu ý**: Để build một kernel có version linux cũ hơn như bản 5.12, điều quan trọng không chỉ là build đúng mà phải chọn đúng version của các toolchain công cụ, vì có thể các GNU mới hơn sẽ gây
+lỗi, ảnh hưởng tới việc tái tạo. Do đó các bạn có thể tìm hiểu docker, để nắm được vai trò của nó trong việc cô lập môi trường nhé, điều này rất quan trọng khi các bạn học build với các source cũ đó nhe.
+
+## Bật các build cần thiết cho USB camera
 
 
+Bản chất ta cần các phụ thuộc theo flow sau:
+```
+USB
+ ↓
+Media
+ ↓
+V4L2
+ ↓
+UVC
+```
+Vậy ta bật hết các phụ thuộc liên quan, mình khuyên các bạn nên chạy lần lượt từng dòng tránh lỗi:
+
+```
+scripts/config \
+    --file .config \
+    --enable MEDIA_SUPPORT
+
+scripts/config \
+    --file .config \
+    --enable MEDIA_SUPPORT_FILTER
+
+scripts/config \
+    --file .config \
+    --enable MEDIA_CAMERA_SUPPORT
+
+scripts/config \
+    --file .config \
+    --enable MEDIA_USB_SUPPORT
+
+scripts/config \
+    --file .config \
+    --enable VIDEO_DEV
+
+scripts/config \
+    --file .config \
+    --enable USB_VIDEO_CLASS
+
+scripts/config \
+    --file .config \
+    --enable USB_VIDEO_CLASS_INPUT_EVDEV
+
+scripts/config \
+    --file .config \
+    --enable ARCH_MULTIPLATFORM
+
+scripts/config \
+    --file .config \
+    --enable ARCH_MULTI_V7
+
+scripts/config \
+    --file .config \
+    --enable ARCH_SOCFPGA
+
+scripts/config \
+    --file .config \
+    --disable STACKPROTECTOR_PER_TASK
+```
+
+Chạy biên dịch chéo olddefconfig:
+```
+make olddefconfig
+```
+Check lại xem camera đã thực sự được bật chưa, đồng thời các config cũ vẫn còn nguyên:
+```
+grep -E '^CONFIG_(MEDIA_SUPPORT|MEDIA_CAMERA_SUPPORT|MEDIA_USB_SUPPORT|VIDEO_DEV|USB_VIDEO_CLASS|USB_VIDEO_CLASS_INPUT_EVDEV)=' .config
+grep -E '^CONFIG_(OF_CONFIGFS|OF_OVERLAY|FPGA|FPGA_MGR_SOCFPGA|FPGA_BRIDGE|SOCFPGA_FPGA_BRIDGE|FPGA_REGION)=' .config
+```
+Nếu kết quả như hình dưới ta đã sẵn sàng build lại kernel 5.12 uvc.
+
+<img width="1849" height="961" alt="image" src="https://github.com/user-attachments/assets/90004ce9-94fc-4d28-b752-4773c4111f2c" />
+
+## Build kernel 5.12 mới với driver uvc
+
+Lệnh build zImage:
+```
+make clean
+make -j$(nproc) LOCALVERSION=zImage-uvc zImage
+```
+
+Khi build thành công, thì kết quả sẽ như hình dưới:
+
+<img width="1849" height="961" alt="image" src="https://github.com/user-attachments/assets/4f2f38e0-2677-4759-8a56-663661d64f40" />
+
+Lưu lại là xong:
+```
+cp arch/arm/boot/zImage \
+   ~/de10nano-linux-lab/zImage-5.12.0zImage-uvc
+```
+## Thay thế zImage
+B1:
+```
+cp --reflink=auto \
+de10nano-author-5.12-golden.img \
+de10nano-author-5.12-uvc.img
+```
+B2:
+```
+LOOP=$(sudo losetup --find --show --partscan \
+de10nano-author-5.12-uvc.img)
+
+echo $LOOP
+lsblk $LOOP
+```
+Kết quả ra:
+
+<img width="1849" height="282" alt="image" src="https://github.com/user-attachments/assets/a91ad31b-bf2f-45fb-89b7-bd52c77ea210" />
+
+B3:
+```
+sudo mkdir -p /mnt/de10boot
+sudo mount ${LOOP}p1 /mnt/de10boot
+```
+B4:
+```
+#backup zImage gốc
+cp /mnt/de10boot/zImage \
+~/de10nano-linux-lab/zImage-author-original-5.12
+#thay thế
+sudo cp \
+~/de10nano-linux-lab/zImage-5.12.0zImage-uvc \
+/mnt/de10boot/zImage
+```
+B5:
+```
+sync
+sudo umount /mnt/de10boot
+sudo losetup -d $LOOP
+```
+**Lưu ý** Vẫn sẽ có bản kernel 5.12 uvc này cho các bạn sẵn trên release nhé.
 
