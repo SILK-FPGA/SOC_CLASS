@@ -354,12 +354,9 @@ vào SD.
 
 ### Code hoàn chinh
 ```
-# ============================================================
-# Linux Kernel Build for Terasic DE10-Nano
-# Kernel: Linux 6.18.49 LTS
-# UVC camera support: built-in
-# ============================================================
-
+# ------------------------------------------------------------
+# export moi troung lam viec
+# ------------------------------------------------------------
 export DE10_LAB=$HOME/de10nano-linux-lab
 export ARCH=arm
 export CROSS_COMPILE=arm-linux-gnueabihf-
@@ -368,7 +365,7 @@ cd $DE10_LAB
 
 
 # ------------------------------------------------------------
-# Get kernel source
+# lay kernel source 
 # ------------------------------------------------------------
 
 git clone \
@@ -381,7 +378,7 @@ cd linux
 
 
 # ------------------------------------------------------------
-# Default SoCFPGA configuration
+#soc fpga config mac dinh 
 # ------------------------------------------------------------
 
 rm -rf build
@@ -390,7 +387,7 @@ make O=build socfpga_defconfig
 
 
 # ------------------------------------------------------------
-# Kernel identity
+# danh tinh kernel
 # ------------------------------------------------------------
 
 scripts/config \
@@ -402,16 +399,12 @@ scripts/config \
     --disable LOCALVERSION_AUTO
 
 
-# ------------------------------------------------------------
-# Export running kernel configuration via /proc/config.gz
-# ------------------------------------------------------------
-
 scripts/config --file build/.config --enable IKCONFIG
 scripts/config --file build/.config --enable IKCONFIG_PROC
 
 
 # ------------------------------------------------------------
-# USB controller
+# usb controoller
 # ------------------------------------------------------------
 
 scripts/config --file build/.config --enable USB
@@ -420,7 +413,7 @@ scripts/config --file build/.config --enable NOP_USB_XCEIV
 
 
 # ------------------------------------------------------------
-# Media / Video4Linux
+# media
 # ------------------------------------------------------------
 
 scripts/config --file build/.config --enable MEDIA_SUPPORT
@@ -430,7 +423,7 @@ scripts/config --file build/.config --enable MEDIA_USB_SUPPORT
 
 
 # ------------------------------------------------------------
-# USB Video Class webcam driver
+# usb video 
 # ------------------------------------------------------------
 
 scripts/config --file build/.config --enable USB_VIDEO_CLASS
@@ -438,7 +431,7 @@ scripts/config --file build/.config --enable USB_VIDEO_CLASS_INPUT_EVDEV
 
 
 # ------------------------------------------------------------
-# Root filesystem support
+# rootfs supports
 # ------------------------------------------------------------
 
 scripts/config --file build/.config --enable EXT4_FS
@@ -447,7 +440,7 @@ scripts/config --file build/.config --enable DEVTMPFS_MOUNT
 
 
 # ------------------------------------------------------------
-# Resolve Kconfig dependencies
+# sua lai Kconfig 
 # ------------------------------------------------------------
 
 make O=build olddefconfig
@@ -463,7 +456,7 @@ build/.config
 
 
 # ------------------------------------------------------------
-# Build kernel + DTBs + modules
+# bien dichkernel + DTBs + modules
 # ------------------------------------------------------------
 
 make O=build -j$(nproc) \
@@ -473,7 +466,7 @@ make O=build -j$(nproc) \
 
 
 # ------------------------------------------------------------
-# Check outputs
+# kiem tra dau ra
 # ------------------------------------------------------------
 
 make -s O=build kernelrelease
@@ -486,7 +479,7 @@ find build/arch/arm/boot/dts \
 
 
 # ------------------------------------------------------------
-# Verify UVC is built into kernel
+# kiem tra uvc
 # ------------------------------------------------------------
 
 grep '^CONFIG_USB_VIDEO_CLASS=' \
@@ -510,7 +503,8 @@ Kết quả phải là:
 
 <img width="1767" height="278" alt="image" src="https://github.com/user-attachments/assets/ec86e957-b4ab-4fd0-9313-debf929c6843" />
 
-Tuy nhiên ta chưa bật cho phép device tree overlay, bằng chứng là chạy lệnh sau kết quả chỉ trả về con trỏ:
+Tuy nhiên ta chưa bật cho phép device tree overlay đây là tính năng mà mình đã chỉ trong khóa học, khá quan trọng để nạp cấu hình fpga khi linux đang chạy mà không cần boot lại,
+bằng chứng là chạy lệnh sau kết quả chỉ trả về con trỏ:
 ```
 grep -Rns '^config OF_CONFIGFS' drivers/of
 ```
