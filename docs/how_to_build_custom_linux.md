@@ -341,4 +341,200 @@ u-boot-with-spl.sfp
           ↓
        boot Linux
 ```
+## Biên dịch Linux kernel
+
+Linux kernel có thể chia làm 3 loại thường gặp: 1 là Linux upstream (Linux mailine), bản này do chính Linux Torvald phát triển, tuy nhiên thử nghiệm nhiều công nghệ mới, do đó chưa
+dùng cho FPGA vì chưa có đầy đủ driver hỗ trợ tốt. Loại thứ 2 là Linux LTS (longterm) là lấy từ mainline nhưng chọn ra các phiên bản hỗ trợ vá lỗi lâu dài từ 3 tới 6 năm (các bản 6.1,6.2,..). Loại thứ 3 là Linux BSP (board support package), đây là loại mà các bạn sẽ thường tải về ngay trên trang chủ của nhà sản xuất FPGA, vì đây là phiên bản đã được ích hợp 
+sẵn các patch, driver tối ưu cho bộ nhớ, bộ điều khiển ngoại vi, và cơ chế cấu hình FPGA cụ thể của hãng đó. Sau đây mình sẽ tự build BSP cho board tùy theo nhu cầu.
+### Các bước khi biên dịch
+
+Thường gồm các bước sau: Tải 1 source kernel có sẵn từ Vendor(Altera, Xilinx) hoặc từ Mainline github --> Cấu hình Linux defconfig --> Biên dịch kernel, module, device tree --> Chép
+vào SD.
+
+
+### Code hoàn chinh
+```
+# ============================================================
+# Linux Kernel Build for Terasic DE10-Nano
+# Kernel: Linux 6.18.49 LTS
+# UVC camera support: built-in
+# ============================================================
+
+export DE10_LAB=$HOME/de10nano-linux-lab
+export ARCH=arm
+export CROSS_COMPILE=arm-linux-gnueabihf-
+
+cd $DE10_LAB
+
+
+# ------------------------------------------------------------
+# Get kernel source
+# ------------------------------------------------------------
+
+git clone \
+    --depth 1 \
+    --branch v6.18.49 \
+    https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git \
+    linux
+
+cd linux
+
+
+# ------------------------------------------------------------
+# Default SoCFPGA configuration
+# ------------------------------------------------------------
+
+rm -rf build
+
+make O=build socfpga_defconfig
+
+
+# ------------------------------------------------------------
+# Kernel identity
+# ------------------------------------------------------------
+
+scripts/config \
+    --file build/.config \
+    --set-str LOCALVERSION "-de10nano-uvc"
+
+scripts/config \
+    --file build/.config \
+    --disable LOCALVERSION_AUTO
+
+
+# ------------------------------------------------------------
+# Export running kernel configuration via /proc/config.gz
+# ------------------------------------------------------------
+
+scripts/config --file build/.config --enable IKCONFIG
+scripts/config --file build/.config --enable IKCONFIG_PROC
+
+
+# ------------------------------------------------------------
+# USB controller
+# ------------------------------------------------------------
+
+scripts/config --file build/.config --enable USB
+scripts/config --file build/.config --enable USB_DWC2
+scripts/config --file build/.config --enable NOP_USB_XCEIV
+
+
+# ------------------------------------------------------------
+# Media / Video4Linux
+# ------------------------------------------------------------
+
+scripts/config --file build/.config --enable MEDIA_SUPPORT
+scripts/config --file build/.config --enable MEDIA_CAMERA_SUPPORT
+scripts/config --file build/.config --enable VIDEO_DEV
+scripts/config --file build/.config --enable MEDIA_USB_SUPPORT
+
+
+# ------------------------------------------------------------
+# USB Video Class webcam driver
+# ------------------------------------------------------------
+
+scripts/config --file build/.config --enable USB_VIDEO_CLASS
+scripts/config --file build/.config --enable USB_VIDEO_CLASS_INPUT_EVDEV
+
+
+# ------------------------------------------------------------
+# Root filesystem support
+# ------------------------------------------------------------
+
+scripts/config --file build/.config --enable EXT4_FS
+scripts/config --file build/.config --enable DEVTMPFS
+scripts/config --file build/.config --enable DEVTMPFS_MOUNT
+
+
+# ------------------------------------------------------------
+# Resolve Kconfig dependencies
+# ------------------------------------------------------------
+
+make O=build olddefconfig
+
+
+# ------------------------------------------------------------
+# Verify important options
+# ------------------------------------------------------------
+
+grep -E \
+'^CONFIG_(MEDIA_SUPPORT|MEDIA_CAMERA_SUPPORT|VIDEO_DEV|MEDIA_USB_SUPPORT|USB_VIDEO_CLASS|USB_DWC2|EXT4_FS|IKCONFIG|IKCONFIG_PROC)=' \
+build/.config
+
+
+# ------------------------------------------------------------
+# Build kernel + DTBs + modules
+# ------------------------------------------------------------
+
+make O=build -j$(nproc) \
+    zImage \
+    dtbs \
+    modules
+
+
+# ------------------------------------------------------------
+# Check outputs
+# ------------------------------------------------------------
+
+make -s O=build kernelrelease
+
+ls -lh build/arch/arm/boot/zImage
+
+find build/arch/arm/boot/dts \
+    -name 'socfpga_cyclone5_de10nano.dtb' \
+    -print
+
+
+# ------------------------------------------------------------
+# Verify UVC is built into kernel
+# ------------------------------------------------------------
+
+grep '^CONFIG_USB_VIDEO_CLASS=' \
+    build/.config
+
+${CROSS_COMPILE}nm build/vmlinux \
+    | grep -i uvc \
+    | head
+```
+## Kiểm tra Linux vừa build
+
+Mục tiêu của chúng ta là Linux có đầy đủ FPGA manager (để nạp bitstream vào vùng FPGA), bridge manager (để điều khiển các cây cầu H2F, F2H, F2SDRAM), Các driver của USB và media. 
+lệnh check sau khi build:
+```
+cd ~/de10nano-linux-lab/linux # thư mục chứa linux kernel
+grep -E \
+'^CONFIG_(FPGA|FPGA_MGR_SOCFPGA|FPGA_BRIDGE|SOCFPGA_FPGA_BRIDGE|FPGA_REGION|OF_FPGA_REGION|OF_OVERLAY|CONFIGFS_FS|OF_CONFIGFS|OVERLAY_FS|USB_VIDEO_CLASS|USB_DWC2|MODULES)=' \
+build/.config
+```
+Kết quả phải là: 
+
+<img width="1767" height="278" alt="image" src="https://github.com/user-attachments/assets/ec86e957-b4ab-4fd0-9313-debf929c6843" />
+
+Tuy nhiên ta chưa bật cho phép device tree overlay, bằng chứng là chạy lệnh sau kết quả chỉ trả về con trỏ:
+```
+grep -Rns '^config OF_CONFIGFS' drivers/of
+```
+Để khắc phục thì ta sửa như sau, bật chức năng nạp động trong build
+```
+cd ~/de10nano-linux-lab/linux # thư mục chứa
+
+scripts/config \
+    --file build/.config \
+    --enable OF_FPGA_REGION
+scripts/config \
+    --file build/.config \
+    --enable CONFIGFS_FS
+
+make O=build olddefconfig #build lại config cũ chèn cái mới vào
+```
+Cuối cùng rebuild lại image
+```
+make O=build -j$(nproc) \
+    zImage \
+    dtbs \
+    modules
+```
+
+
+
 
