@@ -732,6 +732,10 @@ Cài thêm các thư viện cần thiết:
 apt update
 apt install -y v4l-utils ffmpeg
 ```
+Kiểm tra tên camera, hiện ra đúng tên như hình dưới
+
+<img width="1826" height="948" alt="image" src="https://github.com/user-attachments/assets/0c240931-812f-4e40-ba77-21fb4204b923" />
+
 
 Đến đây phần kernel của chúng ta coi như đã pass. Vì đã thêm thành công USB camera cho các bài lab tiếp theo.
 
