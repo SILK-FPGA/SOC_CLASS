@@ -690,7 +690,7 @@ Lưu lại là xong:
 cp arch/arm/boot/zImage \
    ~/de10nano-linux-lab/zImage-5.12.0zImage-uvc
 ```
-## Thay thế zImage
+### Thay thế zImage
 
 Ở bước này các bạn vào .image gốc ban đầu, tìm đúng chỗ chứa .zImage cũ, rồi thay thế bằng zImage hiện tại đang nằm trong đường dẫn: '~/de10nano-linux-lab/linux-socfpga-5.12-uvc/arch/arm/boot/zImage'
 
@@ -700,6 +700,38 @@ cp arch/arm/boot/zImage \
 Thường thì ở trên linux, sẽ không hiện ra thư mục của boot và file zImage, các bạn phải click đúp chuột vào file de10nano-huyatieo-5.12-golden.img (sau khi tải và giải nén file golden
 từ .img.xz), khi đó nó sẽ hiện ra 2 vùng như đã phân tích Imgage gốc ở phần trên có nói.
 
+
 <img width="1076" height="504" alt="image" src="https://github.com/user-attachments/assets/2760b91b-17c0-4b62-a0ca-34d2f3df89d8" />
 
 Chép đè vào là xong.
+
+### Kiểm tra xem boot thành công
+
+Sau khi thay đổi với zImage mới, ta cắm thẻ nhớ vào board, đăng nhập và kiểm tra. Đầu tiên là xác nhận đang boot đúng với kernel uvc. Kết quả mong muốn: '5.12.0zImage-uvc':
+
+<img width="1076" height="504" alt="image" src="https://github.com/user-attachments/assets/0c23a393-084d-4a91-b2b2-4ad74f33a9b2" />
+
+Xác nhận các config của UVC/V4L2 đang chạy và được bật
+```
+zcat /proc/config.gz | grep -E \
+'CONFIG_(MEDIA_SUPPORT|VIDEO_DEV|USB_VIDEO_CLASS|USB_DWC2)'
+```
+Kết quả mong muốn có:
+```
+CONFIG_MEDIA_SUPPORT=y
+CONFIG_VIDEO_DEV=y
+CONFIG_USB_VIDEO_CLASS=y
+CONFIG_USB_DWC2=y
+```
+Cắm camera USB vào, của mình là C270 WEBCAM. Chạy lệnh này để xác nhận kernel đã nhận được camera (liệt kê ra dòng /dev/video):
+
+<img width="1076" height="504" alt="image" src="https://github.com/user-attachments/assets/8141c113-27aa-4339-812e-422967b44958" />
+
+Cài thêm các thư viện cần thiết:
+```
+apt update
+apt install -y v4l-utils ffmpeg
+```
+
+Đến đây phần kernel của chúng ta coi như đã pass. Vì đã thêm thành công USB camera cho các bài lab tiếp theo.
+
