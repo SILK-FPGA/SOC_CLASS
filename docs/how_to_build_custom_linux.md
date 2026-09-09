@@ -691,44 +691,15 @@ cp arch/arm/boot/zImage \
    ~/de10nano-linux-lab/zImage-5.12.0zImage-uvc
 ```
 ## Thay thế zImage
-B1:
-```
-cp --reflink=auto \
-de10nano-author-5.12-golden.img \
-de10nano-author-5.12-uvc.img
-```
-B2:
-```
-LOOP=$(sudo losetup --find --show --partscan \
-de10nano-author-5.12-uvc.img)
 
-echo $LOOP
-lsblk $LOOP
-```
-Kết quả ra:
+Ở bước này các bạn vào .image gốc ban đầu, tìm đúng chỗ chứa .zImage cũ, rồi thay thế bằng zImage hiện tại đang nằm trong đường dẫn: '~/de10nano-linux-lab/linux-socfpga-5.12-uvc/arch/arm/boot/zImage'
 
-<img width="1849" height="282" alt="image" src="https://github.com/user-attachments/assets/a91ad31b-bf2f-45fb-89b7-bd52c77ea210" />
+<img width="1194" height="667" alt="image" src="https://github.com/user-attachments/assets/fa472713-cd9a-4d9f-bdd8-dc1088fb579d" />
 
-B3:
-```
-sudo mkdir -p /mnt/de10boot
-sudo mount ${LOOP}p1 /mnt/de10boot
-```
-B4:
-```
-#backup zImage gốc
-cp /mnt/de10boot/zImage \
-~/de10nano-linux-lab/zImage-author-original-5.12
-#thay thế
-sudo cp \
-~/de10nano-linux-lab/zImage-5.12.0zImage-uvc \
-/mnt/de10boot/zImage
-```
-B5:
-```
-sync
-sudo umount /mnt/de10boot
-sudo losetup -d $LOOP
-```
-**Lưu ý** Vẫn sẽ có bản kernel 5.12 uvc này cho các bạn sẵn trên release nhé.
 
+Thường thì ở trên linux, sẽ không hiện ra thư mục của boot và file zImage, các bạn phải click đúp chuột vào file de10nano-huyatieo-5.12-golden.img (sau khi tải và giải nén file golden
+từ .img.xz), khi đó nó sẽ hiện ra 2 vùng như đã phân tích Imgage gốc ở phần trên có nói.
+
+<img width="1076" height="504" alt="image" src="https://github.com/user-attachments/assets/2760b91b-17c0-4b62-a0ca-34d2f3df89d8" />
+
+Chép đè vào là xong.
